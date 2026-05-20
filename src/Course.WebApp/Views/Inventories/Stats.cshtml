@@ -1,0 +1,40 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryStatsViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = $"{Model.Nav.Title} - {Localizer["InventoryStats"]}";
+}
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h5">@Localizer["InventoryStats"]</h1>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle custom-table mb-0">
+                <tbody>
+                    <tr>
+                        <th scope="row">@Localizer["StatsItemsCount"]</th>
+                        <td>@Model.ItemsCount</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">@Localizer["StatsAvgPrice"]</th>
+                        <td>@(Model.AveragePrice?.ToString("N2") ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">@Localizer["StatsMinPrice"]</th>
+                        <td>@(Model.MinPrice?.ToString("N2") ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">@Localizer["StatsMaxPrice"]</th>
+                        <td>@(Model.MaxPrice?.ToString("N2") ?? "-")</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">@Localizer["StatsLastUpdated"]</th>
+                        <td>@(Model.LastItemUpdatedAt?.ToLocalTime().ToString("g") ?? "-")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

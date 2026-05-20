@@ -1,0 +1,64 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.SearchIndexViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = Localizer["SearchTitle"];
+    var query = Model.Query;
+}
+
+<div class="page-header mb-4">
+    <h1 class="h3">@Localizer["SearchTitle"]</h1>
+    <p class="text-muted mb-0">@Localizer["SearchHint"]</p>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table align-middle custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">@Localizer["TableType"]</th>
+                        <th scope="col">@Localizer["TableTitle"]</th>
+                        <th scope="col">@Localizer["TableOwner"]</th>
+                        <th scope="col">@Localizer["TableUpdated"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (string.IsNullOrWhiteSpace(query))
+                    {
+                        <tr>
+                            <td colspan="4" class="text-muted">@Localizer["SearchEnterQueryHint"]</td>
+                        </tr>
+                    }
+                    else if (Model.Results.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="4" class="text-muted">@Localizer["NoResultsForQuery", query]</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var row in Model.Results)
+                        {
+                            <tr>
+                                <td>@(row.IsItem ? Localizer["SearchTypeItem"] : Localizer["SearchTypeInventory"])</td>
+                                <td>
+                                    @if (row.IsItem)
+                                    {
+                                        <a asp-controller="Inventories" asp-action="Items" asp-route-id="@row.InventoryId">@row.Title</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Inventories" asp-action="Details" asp-route-id="@row.InventoryId">@row.Title</a>
+                                    }
+                                </td>
+                                <td>@(string.IsNullOrWhiteSpace(row.OwnerName) ? "-" : row.OwnerName)</td>
+                                <td>@row.UpdatedAt.ToLocalTime().ToString("g")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Inventar Hub</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Bosh sahifa</value>
+  </data>
+  <data name="NavInventories" xml:space="preserve">
+    <value>Inventarlar</value>
+  </data>
+  <data name="NavMyPage" xml:space="preserve">
+    <value>Mening sahifam</value>
+  </data>
+  <data name="NavAdmin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Inventarlar va narsalarni qidiring</value>
+  </data>
+  <data name="SearchButton" xml:space="preserve">
+    <value>Qidirish</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Yorug</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Qorongu</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Til</value>
+  </data>
+  <data name="HelloWorldTitle" xml:space="preserve">
+    <value>Salom, dunyo</value>
+  </data>
+  <data name="HelloWorldSubtitle" xml:space="preserve">
+    <value>Loyiha ishlayapti. Ishonchli asosdan boshlang.</value>
+  </data>
+  <data name="SearchTitle" xml:space="preserve">
+    <value>Qidiruv</value>
+  </data>
+  <data name="SearchHint" xml:space="preserve">
+    <value>Inventarlar va narsalar uchun sorov kiriting.</value>
+  </data>
+  <data name="PlaceholderTableTitle" xml:space="preserve">
+    <value>Keyinroq</value>
+  </data>
+  <data name="InventoryListTitle" xml:space="preserve">
+    <value>Inventarlar</value>
+  </data>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>Mening sahifam</value>
+  </data>
+  <data name="AdminTitle" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Salom</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Kirish</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Chiqish</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Royxatdan otish</value>
+  </data>
+  <data name="CreateInventory" xml:space="preserve">
+    <value>Inventar yaratish</value>
+  </data>
+  <data name="OwnedInventories" xml:space="preserve">
+    <value>Meniki</value>
+  </data>
+  <data name="SharedWithMe" xml:space="preserve">
+    <value>Menga ulashilgan</value>
+  </data>
+  <data name="NoInventoriesYet" xml:space="preserve">
+    <value>Hozircha inventarlar yoq.</value>
+  </data>
+  <data name="NoSharedInventoriesYet" xml:space="preserve">
+    <value>Hozircha ulashilgan inventarlar yoq.</value>
+  </data>
+  <data name="NoUsersLoaded" xml:space="preserve">
+    <value>Foydalanuvchilar yuklanmadi.</value>
+  </data>
+  <data name="NoResultsForQuery" xml:space="preserve">
+    <value>"{0}" uchun natija yoq.</value>
+  </data>
+  <data name="TableTitle" xml:space="preserve">
+    <value>Nomi</value>
+  </data>
+  <data name="TableCategory" xml:space="preserve">
+    <value>Turkum</value>
+  </data>
+  <data name="TableOwner" xml:space="preserve">
+    <value>Ega</value>
+  </data>
+  <data name="TableItems" xml:space="preserve">
+    <value>Buyumlar</value>
+  </data>
+  <data name="TableUpdated" xml:space="preserve">
+    <value>Yangilangan</value>
+  </data>
+  <data name="TableType" xml:space="preserve">
+    <value>Turi</value>
+  </data>
+  <data name="TableUser" xml:space="preserve">
+    <value>Foydalanuvchi</value>
+  </data>
+  <data name="TableEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+    <data name="SelectUserLabel" xml:space="preserve">
+      <value>Foydalanuvchini tanlang</value>
+    </data>
+  <data name="TableStatus" xml:space="preserve">
+    <value>Holat</value>
+  </data>
+  <data name="TableRole" xml:space="preserve">
+    <value>Rol</value>
+  </data>
+  <data name="AdminBlock" xml:space="preserve">
+    <value>Bloklash</value>
+  </data>
+  <data name="AdminUnblock" xml:space="preserve">
+    <value>Blokdan chiqarish</value>
+  </data>
+  <data name="AdminDelete" xml:space="preserve">
+    <value>Ochirish</value>
+  </data>
+  <data name="AdminToggle" xml:space="preserve">
+    <value>Adminni almashtirish</value>
+  </data>
+  <data name="PrivacyTitle" xml:space="preserve">
+    <value>Maxfiylik siyosati</value>
+  </data>
+  <data name="PrivacyBody" xml:space="preserve">
+    <value>Saytingizning maxfiylik siyosatini shu yerda yozing.</value>
+  </data>
+  <data name="IdFormatTitle" xml:space="preserve">
+    <value>ID format</value>
+  </data>
+  <data name="IdFormatLabel" xml:space="preserve">
+    <value>ID format</value>
+  </data>
+  <data name="IdFormatHelp" xml:space="preserve">
+    <value>Quyidagi tokenlardan foydalaning: {SEQ}, {SEQ:0000}, {DATE:yyyyMMdd}, {GUID}, {RAND6}, {RAND9}, {RAND20}, {RAND32}. Qavslar uchun {{ va }} ishlating.</value>
+  </data>
+  <data name="IdFormatUpdate" xml:space="preserve">
+    <value>ID formatni yangilash</value>
+  </data>
+  <data name="IdFormatNoAccess" xml:space="preserve">
+    <value>ID formatni tahrirlash uchun ruxsat yoq.</value>
+  </data>
+  <data name="CommentsTitle" xml:space="preserve">
+    <value>Izohlar</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Izoh yozing...</value>
+  </data>
+  <data name="AddComment" xml:space="preserve">
+    <value>Izoh qoldirish</value>
+  </data>
+  <data name="CommentNoAccess" xml:space="preserve">
+    <value>Faqat ruxsatli foydalanuvchilar izoh qoldira oladi.</value>
+  </data>
+  <data name="CommentSignIn" xml:space="preserve">
+    <value>Izoh qoldirish uchun tizimga kiring.</value>
+  </data>
+  <data name="NoCommentsYet" xml:space="preserve">
+    <value>Hozircha izohlar yoq.</value>
+  </data>
+  <data name="InventoryOverview" xml:space="preserve">
+    <value>Umumiy</value>
+  </data>
+  <data name="InventoryItems" xml:space="preserve">
+    <value>Buyumlar</value>
+  </data>
+  <data name="InventoryStats" xml:space="preserve">
+    <value>Statistika</value>
+  </data>
+  <data name="InventoryEdit" xml:space="preserve">
+    <value>Tahrirlash</value>
+  </data>
+  <data name="InventoryAccess" xml:space="preserve">
+    <value>Ruxsatlar</value>
+  </data>
+  <data name="InventoryFields" xml:space="preserve">
+    <value>Maydonlar</value>
+  </data>
+  <data name="InventoryTags" xml:space="preserve">
+    <value>Teglar</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Saqlash</value>
+  </data>
+  <data name="TableCustomId" xml:space="preserve">
+    <value>Maxsus ID</value>
+  </data>
+  <data name="TablePrice" xml:space="preserve">
+    <value>Narx</value>
+  </data>
+  <data name="TableWriteAccess" xml:space="preserve">
+    <value>Yozish ruxsati</value>
+  </data>
+  <data name="TableAdded" xml:space="preserve">
+    <value>Qoshilgan</value>
+  </data>
+  <data name="TableFieldType" xml:space="preserve">
+    <value>Maydon turi</value>
+  </data>
+  <data name="TableSlot" xml:space="preserve">
+    <value>Slot</value>
+  </data>
+  <data name="TableShowInTable" xml:space="preserve">
+    <value>Jadvalda korsatish</value>
+  </data>
+  <data name="NoItemsYet" xml:space="preserve">
+    <value>Hozircha buyumlar yoq.</value>
+  </data>
+  <data name="NoAccessEntries" xml:space="preserve">
+    <value>Hozircha ruxsatlar yoq.</value>
+  </data>
+  <data name="NoFieldsYet" xml:space="preserve">
+    <value>Hozircha maydonlar yoq.</value>
+  </data>
+  <data name="NoTagsYet" xml:space="preserve">
+    <value>Hozircha teglar yoq.</value>
+  </data>
+  <data name="StatsItemsCount" xml:space="preserve">
+    <value>Buyumlar soni</value>
+  </data>
+  <data name="StatsAvgPrice" xml:space="preserve">
+    <value>Ortacha narx</value>
+  </data>
+  <data name="StatsMinPrice" xml:space="preserve">
+    <value>Minimal narx</value>
+  </data>
+  <data name="StatsMaxPrice" xml:space="preserve">
+    <value>Maksimal narx</value>
+  </data>
+  <data name="StatsLastUpdated" xml:space="preserve">
+    <value>Oxirgi yangilanish</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ha</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Yoq</value>
+  </data>
+  <data name="AddItem" xml:space="preserve">
+    <value>Buyum qoshish</value>
+  </data>
+  <data name="PriceLabel" xml:space="preserve">
+    <value>Narx</value>
+  </data>
+  <data name="ItemFieldsTitle" xml:space="preserve">
+    <value>Buyum maydonlari</value>
+  </data>
+  <data name="SearchEnterQueryHint" xml:space="preserve">
+    <value>Mos inventar va buyumlarni korish uchun sorov kiriting.</value>
+  </data>
+  <data name="SearchTypeInventory" xml:space="preserve">
+    <value>Inventar</value>
+  </data>
+  <data name="SearchTypeItem" xml:space="preserve">
+    <value>Buyum</value>
+  </data>
+  <data name="SharePrivateAccessTitle" xml:space="preserve">
+    <value>Maxfiy inventar ruxsati</value>
+  </data>
+  <data name="SharePrivateAccessHint" xml:space="preserve">
+    <value>Maxfiy inventar uchun yaratishda foydalanuvchi nomi yoki email orqali ruxsat bering.</value>
+  </data>
+  <data name="ShareUsersLabel" xml:space="preserve">
+    <value>Ulashiladigan foydalanuvchilar</value>
+  </data>
+  <data name="ShareUsersPlaceholder" xml:space="preserve">
+    <value>ali, bob@example.com</value>
+  </data>
+  <data name="ShareCanWriteLabel" xml:space="preserve">
+    <value>Yozish ruxsatini berish</value>
+  </data>
+  <data name="AddField" xml:space="preserve">
+    <value>Maydon qoshish</value>
+  </data>
+  <data name="AddTag" xml:space="preserve">
+    <value>Teg qoshish</value>
+  </data>
+  <data name="FieldDescriptionLabel" xml:space="preserve">
+    <value>Tavsif</value>
+  </data>
+  <data name="NewTagLabel" xml:space="preserve">
+    <value>Yangi teg</value>
+  </data>
+  <data name="PublicInventoryAccessHint" xml:space="preserve">
+    <value>Ochiq inventar hammaga ochiq; quyidagi selektor orqali ayrim foydalanuvchilarga yozish ruxsatini bering.</value>
+  </data>
+  <data name="ProfilePageHint" xml:space="preserve">
+    <value>Oz inventarlaringiz va sizga ulashilganlarini boshqaring.</value>
+  </data>
+</root>

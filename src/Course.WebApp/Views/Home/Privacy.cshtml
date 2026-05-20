@@ -1,0 +1,8 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = Localizer["PrivacyTitle"];
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>@Localizer["PrivacyBody"]</p>

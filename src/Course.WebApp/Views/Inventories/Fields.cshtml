@@ -1,0 +1,129 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryFieldsViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = $"{Model.Nav.Title} - {Localizer["InventoryFields"]}";
+}
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h5">@Localizer["InventoryFields"]</h1>
+        @if (TempData["FieldError"] is string fieldError)
+        {
+            <div class="alert alert-danger">@fieldError</div>
+        }
+        <form asp-action="AddField" asp-route-id="@Model.Nav.InventoryId" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-12 col-md-3">
+                <select name="FieldType" class="form-select">
+                    <option value="SingleLineText">Single line</option>
+                    <option value="MultiLineText">Multi line</option>
+                    <option value="Link">Link</option>
+                    <option value="Boolean">Boolean</option>
+                    <option value="Number">Number</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3"><input name="Title" class="form-control" placeholder="@Localizer["TableTitle"]" /></div>
+            <div class="col-12 col-md-3"><input name="Description" class="form-control" placeholder="@Localizer["FieldDescriptionLabel"]" /></div>
+            <div class="col-12 col-md-2 form-check pt-2">
+                <input type="checkbox" name="ShowInTable" value="true" class="form-check-input" id="showInTableAdd" />
+                <label class="form-check-label" for="showInTableAdd">@Localizer["TableShowInTable"]</label>
+            </div>
+            <div class="col-12 col-md-1 d-grid">
+                <button class="btn btn-primary" type="submit">@Localizer["AddField"]</button>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table align-middle custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">@Localizer["TableTitle"]</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">@Localizer["TableFieldType"]</th>
+                        <th scope="col">@Localizer["TableSlot"]</th>
+                        <th scope="col">@Localizer["TableShowInTable"]</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Fields.Count > 0)
+                    {
+                        foreach (var field in Model.Fields)
+                        {
+                            <tr>
+                                <td colspan="6">
+                                    <form asp-action="UpdateField" asp-route-id="@Model.Nav.InventoryId" method="post" class="row g-2 align-items-center">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="Id" value="@field.Id" />
+                                        <div class="col-12 col-md-3"><input name="Title" class="form-control" value="@field.Title" /></div>
+                                        <div class="col-12 col-md-3"><input name="Description" class="form-control" value="@field.Description" /></div>
+                                        <div class="col-12 col-md-2">
+                                            <select name="FieldType" class="form-select">
+                                                @if (field.FieldType == Course.Domain.Enums.InventoryFieldType.SingleLineText)
+                                                {
+                                                    <option value="SingleLineText" selected>Single line</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="SingleLineText">Single line</option>
+                                                }
+                                                @if (field.FieldType == Course.Domain.Enums.InventoryFieldType.MultiLineText)
+                                                {
+                                                    <option value="MultiLineText" selected>Multi line</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="MultiLineText">Multi line</option>
+                                                }
+                                                @if (field.FieldType == Course.Domain.Enums.InventoryFieldType.Link)
+                                                {
+                                                    <option value="Link" selected>Link</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="Link">Link</option>
+                                                }
+                                                @if (field.FieldType == Course.Domain.Enums.InventoryFieldType.Boolean)
+                                                {
+                                                    <option value="Boolean" selected>Boolean</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="Boolean">Boolean</option>
+                                                }
+                                                @if (field.FieldType == Course.Domain.Enums.InventoryFieldType.Number)
+                                                {
+                                                    <option value="Number" selected>Number</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="Number">Number</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-1 text-center">@field.SlotIndex</div>
+                                        <div class="col-12 col-md-1 form-check">
+                                            <input type="checkbox" name="ShowInTable" value="true" class="form-check-input" @(field.ShowInTable ? "checked" : string.Empty) />
+                                        </div>
+                                        <div class="col-12 col-md-2 d-flex gap-2 justify-content-end">
+                                            <button class="btn btn-primary btn-sm" type="submit">@Localizer["SaveChanges"]</button>
+                                            <button class="btn btn-action-danger btn-sm" type="submit" formaction="@Url.Action("RemoveField", new { id = Model.Nav.InventoryId, fieldId = field.Id })">@Localizer["AdminDelete"]</button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-muted">@Localizer["NoFieldsYet"]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

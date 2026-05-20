@@ -1,0 +1,58 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryItemsViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = $"{Model.Nav.Title} - {Localizer["InventoryItems"]}";
+}
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-3">
+            <h1 class="h5 mb-0">@Localizer["InventoryItems"]</h1>
+            @if (Model.Nav.CanAddItems)
+            {
+                <a class="btn btn-primary mt-2 mt-sm-0" asp-action="CreateItem" asp-route-id="@Model.Nav.InventoryId">@Localizer["AddItem"]</a>
+            }
+            else if (User.Identity?.IsAuthenticated != true)
+            {
+                <span class="text-muted fs-7">
+                    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="fw-semibold">@Localizer["Login"]</a> to add items to this public inventory.
+                </span>
+            }
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">@Localizer["TableCustomId"]</th>
+                        <th scope="col">@Localizer["TableName"]</th>
+                        <th scope="col">@Localizer["TablePrice"]</th>
+                        <th scope="col">@Localizer["TableUpdated"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items.Count > 0)
+                    {
+                        foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.CustomId</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.Name) ? "-" : item.Name)</td>
+                                <td>@(item.Price?.ToString("N2") ?? "-")</td>
+                                <td>@item.UpdatedAt.ToLocalTime().ToString("g")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-muted">@Localizer["NoItemsYet"]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

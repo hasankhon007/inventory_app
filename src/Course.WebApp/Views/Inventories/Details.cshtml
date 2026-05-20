@@ -1,0 +1,101 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryDetailsViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="page-header mb-4">
+    <h1 class="h3 mb-1">@Model.Title</h1>
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <p class="text-muted mb-0">@Model.Description</p>
+    }
+    <div class="text-muted small mt-2">
+        <span>@Localizer["TableOwner"]: @(string.IsNullOrWhiteSpace(Model.OwnerName) ? "-" : Model.OwnerName)</span>
+        <span class="ms-3">@Localizer["TableCategory"]: @(string.IsNullOrWhiteSpace(Model.CategoryName) ? "-" : Model.CategoryName)</span>
+    </div>
+</div>
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="row g-4">
+    <div class="col-12 col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">@Localizer["IdFormatTitle"]</h2>
+                @if (TempData["IdFormatError"] is string formatError)
+                {
+                    <div class="alert alert-danger">@formatError</div>
+                }
+                @if (Model.CanEditIdFormat)
+                {
+                    <form asp-action="UpdateIdFormat" asp-route-id="@Model.Id" method="post">
+                        <div class="mb-3">
+                            @{ ViewData["InputName"] = "idFormat"; ViewData["InputId"] = "detailsIdFormatInput"; }
+                            <label class="form-label">@Localizer["IdFormatLabel"]</label>
+                            @await Html.PartialAsync("_IdFormatEditor", Model.IdFormat)
+                        </div>
+                        <button type="submit" class="btn btn-primary">@Localizer["IdFormatUpdate"]</button>
+                    </form>
+                }
+                else
+                {
+                    <div class="mb-2"><code>@Model.IdFormat</code></div>
+                    <p class="text-muted mb-0">@Localizer["IdFormatNoAccess"]</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">@Localizer["CommentsTitle"]</h2>
+                @if (TempData["CommentError"] is string commentError)
+                {
+                    <div class="alert alert-danger">@commentError</div>
+                }
+                @if (Model.Comments.Count > 0)
+                {
+                    <div class="list-group list-group-flush mb-3">
+                        @foreach (var comment in Model.Comments)
+                        {
+                            <div class="list-group-item">
+                                <div class="small text-muted mb-1">
+                                    @(string.IsNullOrWhiteSpace(comment.UserName) ? "-" : comment.UserName)
+                                    &middot; @comment.CreatedAt.ToLocalTime().ToString("g")
+                                </div>
+                                <div>@comment.Body</div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-3">@Localizer["NoCommentsYet"]</p>
+                }
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    if (Model.CanComment)
+                    {
+                        <form asp-action="AddComment" asp-route-id="@Model.Id" method="post">
+                            <div class="mb-3">
+                                <textarea name="body" class="form-control" rows="3" maxlength="4000" placeholder="@Localizer["CommentPlaceholder"]" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary">@Localizer["AddComment"]</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">@Localizer["CommentNoAccess"]</p>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted mb-0">@Localizer["CommentSignIn"]</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

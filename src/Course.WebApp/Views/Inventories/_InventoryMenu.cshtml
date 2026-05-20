@@ -1,0 +1,34 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryPageNavViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+
+<nav class="nav nav-tabs mb-4">
+    <a class="nav-link @(Model.ActiveTab == "overview" ? "active" : string.Empty)" asp-action="Details" asp-route-id="@Model.InventoryId">
+        @Localizer["InventoryOverview"]
+    </a>
+    <a class="nav-link @(Model.ActiveTab == "items" ? "active" : string.Empty)" asp-action="Items" asp-route-id="@Model.InventoryId">
+        @Localizer["InventoryItems"]
+    </a>
+    <a class="nav-link @(Model.ActiveTab == "stats" ? "active" : string.Empty)" asp-action="Stats" asp-route-id="@Model.InventoryId">
+        @Localizer["InventoryStats"]
+    </a>
+    @if (Model.CanEdit)
+    {
+        <a class="nav-link @(Model.ActiveTab == "edit" ? "active" : string.Empty)" asp-action="Edit" asp-route-id="@Model.InventoryId">
+            @Localizer["InventoryEdit"]
+        </a>
+        <a class="nav-link @(Model.ActiveTab == "fields" ? "active" : string.Empty)" asp-action="Fields" asp-route-id="@Model.InventoryId">
+            @Localizer["InventoryFields"]
+        </a>
+        <a class="nav-link @(Model.ActiveTab == "tags" ? "active" : string.Empty)" asp-action="Tags" asp-route-id="@Model.InventoryId">
+            @Localizer["InventoryTags"]
+        </a>
+    }
+
+    @if (Model.CanManageAccess)
+    {
+        <a class="nav-link @(Model.ActiveTab == "access" ? "active" : string.Empty)" asp-action="Access" asp-route-id="@Model.InventoryId">
+            @Localizer["InventoryAccess"]
+        </a>
+    }
+</nav>

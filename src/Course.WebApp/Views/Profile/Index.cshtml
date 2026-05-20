@@ -1,0 +1,104 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.ProfileIndexViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = Localizer["ProfileTitle"];
+}
+
+<div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Localizer["ProfileTitle"]</h1>
+        <p class="text-muted mb-0">@Localizer["ProfilePageHint"]</p>
+    </div>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a class="btn btn-primary mt-2 mt-sm-0" href="@Url.Action("Create", "Inventories")">@Localizer["CreateInventory"]</a>
+    }
+</div>
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">@Localizer["OwnedInventories"]</h2>
+                <div class="table-responsive">
+                    <table class="table align-middle custom-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">@Localizer["TableTitle"]</th>
+                                <th scope="col">@Localizer["TableCategory"]</th>
+                                <th scope="col">@Localizer["TableItems"]</th>
+                                <th scope="col">@Localizer["TableUpdated"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.OwnedInventories.Count > 0)
+                            {
+                                foreach (var inventory in Model.OwnedInventories)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="Inventories" asp-action="Details" asp-route-id="@inventory.Id">@inventory.Title</a>
+                                        </td>
+                                        <td>@(string.IsNullOrWhiteSpace(inventory.CategoryName) ? "-" : inventory.CategoryName)</td>
+                                        <td>@inventory.ItemsCount</td>
+                                        <td>@inventory.UpdatedAt.ToLocalTime().ToString("g")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-muted">@Localizer["NoInventoriesYet"]</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">@Localizer["SharedWithMe"]</h2>
+                <div class="table-responsive">
+                    <table class="table align-middle custom-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">@Localizer["TableTitle"]</th>
+                                <th scope="col">@Localizer["TableOwner"]</th>
+                                <th scope="col">@Localizer["TableItems"]</th>
+                                <th scope="col">@Localizer["TableWriteAccess"]</th>
+                                <th scope="col">@Localizer["TableUpdated"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.SharedInventories.Count > 0)
+                            {
+                                foreach (var inventory in Model.SharedInventories)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="Inventories" asp-action="Details" asp-route-id="@inventory.Id">@inventory.Title</a>
+                                        </td>
+                                        <td>@(string.IsNullOrWhiteSpace(inventory.OwnerName) ? "-" : inventory.OwnerName)</td>
+                                        <td>@inventory.ItemsCount</td>
+                                        <td>@(inventory.CanWrite ? Localizer["Yes"] : Localizer["No"])</td>
+                                        <td>@inventory.UpdatedAt.ToLocalTime().ToString("g")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-muted">@Localizer["NoSharedInventoriesYet"]</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

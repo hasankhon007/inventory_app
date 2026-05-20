@@ -1,0 +1,42 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryTagsViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = $"{Model.Nav.Title} - {Localizer["InventoryTags"]}";
+}
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h5">@Localizer["InventoryTags"]</h1>
+        @if (TempData["TagError"] is string tagError)
+        {
+            <div class="alert alert-danger">@tagError</div>
+        }
+        <form asp-action="AddTag" asp-route-id="@Model.Nav.InventoryId" method="post" class="row g-2 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-12 col-md-9"><input name="tagName" class="form-control" placeholder="@Localizer["NewTagLabel"]" /></div>
+            <div class="col-12 col-md-3 d-grid"><button class="btn btn-primary" type="submit">@Localizer["AddTag"]</button></div>
+        </form>
+        @if (Model.Tags.Count > 0)
+        {
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var tag in Model.Tags)
+                {
+                    <form asp-action="UpdateTag" asp-route-id="@Model.Nav.InventoryId" method="post" class="d-inline-flex align-items-center gap-2 tag-editor">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="tagId" value="@tag.Id" />
+                        <input name="tagName" class="form-control form-control-sm" value="@tag.Name" />
+                        <button class="btn btn-primary btn-sm" type="submit">@Localizer["SaveChanges"]</button>
+                        <button class="btn btn-action-danger btn-sm" type="submit" formaction="@Url.Action("RemoveTag", new { id = Model.Nav.InventoryId, tagId = tag.Id })">@Localizer["AdminDelete"]</button>
+                    </form>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-0">@Localizer["NoTagsYet"]</p>
+        }
+    </div>
+</div>

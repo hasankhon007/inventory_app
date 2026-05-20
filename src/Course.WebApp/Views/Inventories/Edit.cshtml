@@ -1,0 +1,99 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryEditViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = Localizer["InventoryEdit"];
+}
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-3">@Localizer["InventoryEdit"]</h1>
+                <form asp-action="Edit" asp-route-id="@Model.Id" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label"></label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                            <option value="">-</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input asp-for="IsPublic" class="form-check-input" />
+                        <label asp-for="IsPublic" class="form-check-label"></label>
+                    </div>
+                    <div id="privateAccessSection" class="inventory-access-card border rounded-4 p-4 mb-3 @(Model.IsPublic ? "d-none" : string.Empty)">
+                        <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mb-2">
+                            <div>
+                                <h2 class="h6 mb-1">@Localizer["SharePrivateAccessTitle"]</h2>
+                                <p class="text-muted small mb-0" id="shareHelperText">@Localizer["SharePrivateAccessHint"]</p>
+                            </div>
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis">@Localizer["InventoryAccess"]</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">@Localizer["ShareUsersLabel"]</label>
+                            <select asp-for="SharedUserIds" class="form-select" multiple size="6">
+                                @foreach (var user in Model.AvailableUsers)
+                                {
+                                    <option value="@user.Id">@(string.IsNullOrWhiteSpace(user.DisplayName) ? user.Email : user.DisplayName) @(string.IsNullOrWhiteSpace(user.Email) ? string.Empty : $"({user.Email})")</option>
+                                }
+                            </select>
+                            <small class="text-muted">@Localizer["ShareUsersPlaceholder"]</small>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="SharedCanWrite" class="form-check-input" />
+                            <label asp-for="SharedCanWrite" class="form-check-label">@Localizer["ShareCanWriteLabel"]</label>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">@Localizer["SaveChanges"]</button>
+                        <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">@Localizer["InventoryOverview"]</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var isPublicCheckbox = document.getElementById("IsPublic");
+            var helperText = document.getElementById("shareHelperText");
+            var accessSection = document.getElementById("privateAccessSection");
+
+            function syncPrivateSectionVisibility() {
+                if (!isPublicCheckbox || !helperText || !accessSection) {
+                    return;
+                }
+
+                accessSection.classList.toggle("d-none", isPublicCheckbox.checked);
+                helperText.textContent = isPublicCheckbox.checked
+                    ? "@Localizer["PublicInventoryAccessHint"]"
+                    : "@Localizer["SharePrivateAccessHint"]";
+            }
+
+            if (isPublicCheckbox) {
+                isPublicCheckbox.addEventListener("change", syncPrivateSectionVisibility);
+            }
+
+            syncPrivateSectionVisibility();
+        })();
+    </script>
+}

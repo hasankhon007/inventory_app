@@ -1,0 +1,78 @@
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryAccessViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = $"{Model.Nav.Title} - {Localizer["InventoryAccess"]}";
+}
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="card shadow-sm inventory-access-card">
+    <div class="card-body">
+        <h1 class="h5">@Localizer["InventoryAccess"]</h1>
+        <div class="mb-3">
+            <form asp-action="GrantAccess" method="post" class="row g-2 align-items-center" data-user-picker data-users-url="@Url.Action("UsersLookup", "Inventories")" data-inventory-id="@Model.Nav.InventoryId">
+                @Html.AntiForgeryToken()
+                <div class="col-12 col-md-6">
+                    <select name="targetUserId" class="form-select" required>
+                        <option value="">@Localizer["SelectUserLabel"]</option>
+                    </select>
+                </div>
+                <div class="col-auto form-check">
+                    <input name="canWrite" type="checkbox" class="form-check-input" id="grantCanWrite" />
+                    <input type="hidden" name="canWrite" value="false" />
+                    <label class="form-check-label" for="grantCanWrite">@Localizer["ShareCanWriteLabel"]</label>
+                </div>
+                <div class="col-auto">
+                    <input type="hidden" name="id" value="@Model.Nav.InventoryId" />
+                    <button class="btn btn-primary">@Localizer["GrantAccess"]</button>
+                </div>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle custom-table inventory-access-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">@Localizer["TableUser"]</th>
+                        <th scope="col">@Localizer["TableEmail"]</th>
+                        <th scope="col">@Localizer["TableWriteAccess"]</th>
+                        <th scope="col">@Localizer["TableAdded"]</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.AccessList.Count > 0)
+                    {
+                        foreach (var entry in Model.AccessList)
+                        {
+                            <tr>
+                                <td>@(string.IsNullOrWhiteSpace(entry.UserName) ? "-" : entry.UserName)</td>
+                                <td>@(string.IsNullOrWhiteSpace(entry.Email) ? "-" : entry.Email)</td>
+                                <td>@(entry.CanWrite ? Localizer["Yes"] : Localizer["No"])</td>
+                                <td>@entry.AddedAt.ToLocalTime().ToString("g")</td>
+                                <td>
+                                    <form asp-action="RevokeAccess" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@Model.Nav.InventoryId" />
+                                        <input type="hidden" name="userId" value="@entry.UserId" />
+                                        <button class="btn btn-action-danger btn-sm">@Localizer["RevokeAccess"]</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-muted">@Localizer["NoAccessEntries"]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/inventory-user-picker.js" asp-append-version="true"></script>
+}

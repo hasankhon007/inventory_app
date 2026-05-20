@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Inventory Hub</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="NavInventories" xml:space="preserve">
+    <value>Inventories</value>
+  </data>
+  <data name="NavMyPage" xml:space="preserve">
+    <value>My Page</value>
+  </data>
+  <data name="NavAdmin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Search inventories and items</value>
+  </data>
+  <data name="SearchButton" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="HelloWorldTitle" xml:space="preserve">
+    <value>Hello, world</value>
+  </data>
+  <data name="HelloWorldSubtitle" xml:space="preserve">
+    <value>Project scaffold is live. Start from a deployable baseline.</value>
+  </data>
+  <data name="SearchTitle" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchHint" xml:space="preserve">
+    <value>Enter a query to search inventories and items.</value>
+  </data>
+  <data name="PlaceholderTableTitle" xml:space="preserve">
+    <value>Coming Soon</value>
+  </data>
+  <data name="InventoryListTitle" xml:space="preserve">
+    <value>Inventories</value>
+  </data>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>My Page</value>
+  </data>
+  <data name="AdminTitle" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Hello</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="CreateInventory" xml:space="preserve">
+    <value>Create inventory</value>
+  </data>
+  <data name="OwnedInventories" xml:space="preserve">
+    <value>Owned inventories</value>
+  </data>
+  <data name="SharedWithMe" xml:space="preserve">
+    <value>Shared with me</value>
+  </data>
+  <data name="NoInventoriesYet" xml:space="preserve">
+    <value>No inventories yet.</value>
+  </data>
+  <data name="NoSharedInventoriesYet" xml:space="preserve">
+    <value>No shared inventories yet.</value>
+  </data>
+  <data name="NoUsersLoaded" xml:space="preserve">
+    <value>No users loaded.</value>
+  </data>
+  <data name="NoResultsForQuery" xml:space="preserve">
+    <value>No results for "{0}" yet.</value>
+  </data>
+  <data name="TableTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="TableCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="TableOwner" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="TableItems" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="TableUpdated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="TableType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="TableUser" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="TableEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="TableStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TableRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="AdminBlock" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="AdminUnblock" xml:space="preserve">
+    <value>Unblock</value>
+  </data>
+  <data name="AdminDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="AdminToggle" xml:space="preserve">
+    <value>Toggle admin</value>
+  </data>
+  <data name="PrivacyTitle" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="PrivacyBody" xml:space="preserve">
+    <value>Use this page to detail your site's privacy policy.</value>
+  </data>
+  <data name="IdFormatTitle" xml:space="preserve">
+    <value>ID format</value>
+  </data>
+  <data name="IdFormatLabel" xml:space="preserve">
+    <value>ID format</value>
+  </data>
+  <data name="IdFormatHelp" xml:space="preserve">
+    <value>Use tokens like {SEQ}, {SEQ:0000}, {DATE:yyyyMMdd}, {GUID}, {RAND6}, {RAND9}, {RAND20}, {RAND32}. Use {{ and }} for literal braces.</value>
+  </data>
+  <data name="IdFormatUpdate" xml:space="preserve">
+    <value>Update ID format</value>
+  </data>
+  <data name="IdFormatNoAccess" xml:space="preserve">
+    <value>Only authorized users can edit the ID format.</value>
+  </data>
+  <data name="CommentsTitle" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Write a comment...</value>
+  </data>
+  <data name="AddComment" xml:space="preserve">
+    <value>Add comment</value>
+  </data>
+  <data name="CommentNoAccess" xml:space="preserve">
+    <value>Only authorized users can comment.</value>
+  </data>
+  <data name="CommentSignIn" xml:space="preserve">
+    <value>Sign in to comment.</value>
+  </data>
+  <data name="NoCommentsYet" xml:space="preserve">
+    <value>No comments yet.</value>
+  </data>
+  <data name="InventoryOverview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="InventoryItems" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="InventoryStats" xml:space="preserve">
+    <value>Stats</value>
+  </data>
+  <data name="InventoryEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="InventoryAccess" xml:space="preserve">
+    <value>Access</value>
+  </data>
+  <data name="InventoryFields" xml:space="preserve">
+    <value>Fields</value>
+  </data>
+  <data name="InventoryTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Save changes</value>
+  </data>
+  <data name="TableCustomId" xml:space="preserve">
+    <value>Custom ID</value>
+  </data>
+  <data name="TablePrice" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="TableWriteAccess" xml:space="preserve">
+    <value>Write access</value>
+  </data>
+  <data name="TableAdded" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="TableFieldType" xml:space="preserve">
+    <value>Field type</value>
+  </data>
+  <data name="TableSlot" xml:space="preserve">
+    <value>Slot</value>
+  </data>
+  <data name="TableShowInTable" xml:space="preserve">
+    <value>Show in table</value>
+  </data>
+  <data name="NoItemsYet" xml:space="preserve">
+    <value>No items yet.</value>
+  </data>
+  <data name="NoAccessEntries" xml:space="preserve">
+    <value>No access entries yet.</value>
+  </data>
+  <data name="NoFieldsYet" xml:space="preserve">
+    <value>No fields yet.</value>
+  </data>
+  <data name="NoTagsYet" xml:space="preserve">
+    <value>No tags yet.</value>
+  </data>
+  <data name="StatsItemsCount" xml:space="preserve">
+    <value>Items count</value>
+  </data>
+  <data name="StatsAvgPrice" xml:space="preserve">
+    <value>Average price</value>
+  </data>
+  <data name="StatsMinPrice" xml:space="preserve">
+    <value>Minimum price</value>
+  </data>
+  <data name="StatsMaxPrice" xml:space="preserve">
+    <value>Maximum price</value>
+  </data>
+  <data name="StatsLastUpdated" xml:space="preserve">
+    <value>Last item update</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="AddItem" xml:space="preserve">
+    <value>Add item</value>
+  </data>
+  <data name="PriceLabel" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="ItemFieldsTitle" xml:space="preserve">
+    <value>Item fields</value>
+  </data>
+  <data name="SearchEnterQueryHint" xml:space="preserve">
+    <value>Enter a query to see matching inventories and items.</value>
+  </data>
+  <data name="SearchTypeInventory" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="SearchTypeItem" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="SharePrivateAccessTitle" xml:space="preserve">
+    <value>Private inventory access</value>
+  </data>
+  <data name="SharePrivateAccessHint" xml:space="preserve">
+    <value>For private inventories, add usernames or emails to grant access on create.</value>
+  </data>
+  <data name="ShareUsersLabel" xml:space="preserve">
+    <value>Users to share with</value>
+  </data>
+  <data name="ShareUsersPlaceholder" xml:space="preserve">
+    <value>alice, bob@example.com</value>
+  </data>
+  <data name="ShareCanWriteLabel" xml:space="preserve">
+    <value>Allow write access</value>
+  </data>
+  <data name="GrantAccess" xml:space="preserve">
+    <value>Grant access</value>
+  </data>
+  <data name="RevokeAccess" xml:space="preserve">
+    <value>Revoke</value>
+  </data>
+  <data name="UsernameOrEmailLabel" xml:space="preserve">
+    <value>Username or email</value>
+  </data>
+  <data name="SelectUserLabel" xml:space="preserve">
+    <value>Select a user</value>
+  </data>
+  <data name="AddField" xml:space="preserve">
+    <value>Add field</value>
+  </data>
+  <data name="AddTag" xml:space="preserve">
+    <value>Add tag</value>
+  </data>
+  <data name="FieldDescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="NewTagLabel" xml:space="preserve">
+    <value>New tag</value>
+  </data>
+  <data name="PublicInventoryAccessHint" xml:space="preserve">
+    <value>Public inventories are open to everyone; use the selector below to grant write access to specific users.</value>
+  </data>
+  <data name="ProfilePageHint" xml:space="preserve">
+    <value>Manage your inventories and the ones shared with you.</value>
+  </data>
+</root>

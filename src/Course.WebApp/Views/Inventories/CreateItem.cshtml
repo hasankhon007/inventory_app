@@ -1,0 +1,142 @@
+@using Course.WebApp.ViewModels
+@using Microsoft.Extensions.Localization
+@model Course.WebApp.ViewModels.InventoryItemCreateViewModel
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    var priceLabel = string.IsNullOrWhiteSpace(Model.PriceLabel)
+        ? Localizer["PriceLabel"].Value
+        : Model.PriceLabel;
+    ViewData["Title"] = $"{Model.Nav.Title} - {Localizer["AddItem"]}";
+}
+
+@await Html.PartialAsync("_InventoryMenu", Model.Nav)
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h5">@Localizer["AddItem"]</h1>
+                <form asp-action="CreateItem" asp-route-id="@Model.InventoryId" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="InventoryId" />
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">@Localizer["ItemNameLabel"]</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label">@priceLabel</label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    @if (Model.NumberFields.Count > 0 || Model.Fields.Count > 0)
+                    {
+                        <hr class="my-4" />
+                        <h2 class="h6">@Localizer["ItemFieldsTitle"]</h2>
+                        @for (var i = 0; i < Model.Fields.Count; i++)
+                        {
+                            var field = Model.Fields[i];
+                            <input type="hidden" asp-for="Fields[i].FieldId" />
+                            <input type="hidden" asp-for="Fields[i].FieldType" />
+                            <input type="hidden" asp-for="Fields[i].SlotIndex" />
+                            <input type="hidden" asp-for="Fields[i].Title" />
+                            <input type="hidden" asp-for="Fields[i].Description" />
+
+                            if (field.FieldType == InventoryFieldType.Boolean)
+                            {
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="Fields[i].BoolValue" class="form-check-input" />
+                                        <label class="form-check-label">@field.Title</label>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(field.Description))
+                                    {
+                                        <small class="text-muted">@field.Description</small>
+                                    }
+                                </div>
+                            }
+                            else if (field.FieldType == InventoryFieldType.SingleLineText)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">@field.Title</label>
+                                    <input asp-for="Fields[i].TextValue" class="form-control" />
+                                    <span asp-validation-for="Fields[i].TextValue" class="text-danger"></span>
+                                    @if (!string.IsNullOrWhiteSpace(field.Description))
+                                    {
+                                        <small class="text-muted">@field.Description</small>
+                                    }
+                                </div>
+                            }
+                            else if (field.FieldType == InventoryFieldType.MultiLineText)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">@field.Title</label>
+                                    <textarea asp-for="Fields[i].MultiTextValue" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="Fields[i].MultiTextValue" class="text-danger"></span>
+                                    @if (!string.IsNullOrWhiteSpace(field.Description))
+                                    {
+                                        <small class="text-muted">@field.Description</small>
+                                    }
+                                </div>
+                            }
+                            else if (field.FieldType == InventoryFieldType.Link)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">@field.Title</label>
+                                    <input asp-for="Fields[i].LinkValue" class="form-control" type="url" />
+                                    <span asp-validation-for="Fields[i].LinkValue" class="text-danger"></span>
+                                    @if (!string.IsNullOrWhiteSpace(field.Description))
+                                    {
+                                        <small class="text-muted">@field.Description</small>
+                                    }
+                                </div>
+                            }
+                            else if (field.FieldType == InventoryFieldType.Number)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">@field.Title</label>
+                                    <input asp-for="Fields[i].NumberValue" class="form-control" type="number" step="any" />
+                                    <span asp-validation-for="Fields[i].NumberValue" class="text-danger"></span>
+                                    @if (!string.IsNullOrWhiteSpace(field.Description))
+                                    {
+                                        <small class="text-muted">@field.Description</small>
+                                    }
+                                </div>
+                            }
+                        }
+
+                        @for (var i = 0; i < Model.NumberFields.Count; i++)
+                        {
+                            var field = Model.NumberFields[i];
+                            <input type="hidden" asp-for="NumberFields[i].Id" />
+                            <input type="hidden" asp-for="NumberFields[i].FieldId" />
+                            <input type="hidden" asp-for="NumberFields[i].FieldType" />
+                            <input type="hidden" asp-for="NumberFields[i].SlotIndex" />
+                            <input type="hidden" asp-for="NumberFields[i].Title" />
+                            <input type="hidden" asp-for="NumberFields[i].Description" />
+                            <div class="mb-3">
+                                <label class="form-label">@field.Title</label>
+                                <input asp-for="NumberFields[i].NumberValue" class="form-control" type="number" step="any" />
+                                <span asp-validation-for="NumberFields[i].NumberValue" class="text-danger"></span>
+                                @if (!string.IsNullOrWhiteSpace(field.Description))
+                                {
+                                    <small class="text-muted">@field.Description</small>
+                                }
+                            </div>
+                        }
+                    }
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">@Localizer["AddItem"]</button>
+                        <a class="btn btn-outline-secondary" asp-action="Items" asp-route-id="@Model.InventoryId">@Localizer["InventoryItems"]</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

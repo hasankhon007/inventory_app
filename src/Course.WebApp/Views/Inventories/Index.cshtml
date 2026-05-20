@@ -1,0 +1,56 @@
+@using Microsoft.Extensions.Localization
+@model IReadOnlyList<Course.WebApp.ViewModels.InventoryListItemViewModel>
+@inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
+@{
+    ViewData["Title"] = Localizer["InventoryListTitle"];
+}
+
+<div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Localizer["InventoryListTitle"]</h1>
+        <p class="text-muted mb-0">@Localizer["PlaceholderTableTitle"]</p>
+    </div>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a class="btn btn-primary mt-2 mt-sm-0" asp-controller="Inventories" asp-action="Create">@Localizer["CreateInventory"]</a>
+    }
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table align-middle custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">@Localizer["TableTitle"]</th>
+                        <th scope="col">@Localizer["TableCategory"]</th>
+                        <th scope="col">@Localizer["TableOwner"]</th>
+                        <th scope="col">@Localizer["TableItems"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var inventory in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@inventory.Id">@inventory.Title</a>
+                                </td>
+                                <td>@(string.IsNullOrWhiteSpace(inventory.CategoryName) ? "-" : inventory.CategoryName)</td>
+                                <td>@(string.IsNullOrWhiteSpace(inventory.OwnerName) ? "-" : inventory.OwnerName)</td>
+                                <td>@inventory.ItemsCount</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-muted">@Localizer["NoInventoriesYet"]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
