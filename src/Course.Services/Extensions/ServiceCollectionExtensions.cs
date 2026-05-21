@@ -1,7 +1,7 @@
-using Course.Domain.Abstractions;
+using Course.DataAccess.Contexts;
+using Course.DataAccess.Repositories;
+using Course.DataAccess.UnitOfWork;
 using Course.Domain.Entities;
-using Course.Services.Data;
-using Course.Services.Data.Repositories;
 using Course.Services.Implementations;
 using Course.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;

@@ -1,6 +1,7 @@
-using Course.Domain.Abstractions;
+using Course.DataAccess.Contexts;
+using Course.DataAccess.Repositories;
 
-namespace Course.Services.Data.Repositories;
+namespace Course.DataAccess.UnitOfWork;
 
 public class EfUnitOfWork : IUnitOfWork
 {

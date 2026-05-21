@@ -1,4 +1,4 @@
-using Course.Domain.Abstractions;
+using Course.DataAccess.UnitOfWork;
 using Course.Domain.Entities;
 using Course.Services.DTOs;
 using Course.Services.Interfaces;

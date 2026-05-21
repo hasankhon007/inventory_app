@@ -1,4 +1,3 @@
-using Course.Domain.Abstractions;
 using Course.Domain.Entities;
 using Course.Domain.Exceptions;
 using Course.Services.DTOs;
@@ -6,6 +5,7 @@ using Course.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Course.DataAccess.UnitOfWork;
 
 namespace Course.Services.Implementations;
 

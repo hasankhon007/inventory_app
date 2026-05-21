@@ -1,4 +1,4 @@
-namespace Course.Domain.Abstractions;
+namespace Course.DataAccess.Repositories;
 
 public interface IRepository<TEntity> where TEntity : class
 {

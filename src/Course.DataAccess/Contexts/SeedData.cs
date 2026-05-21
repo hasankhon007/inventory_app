@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Course.Services.Data;
+namespace Course.DataAccess.Contexts;
 
 public static class SeedData
 {

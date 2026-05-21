@@ -1,7 +1,7 @@
-using Course.Domain.Abstractions;
+using Course.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Course.Services.Data.Repositories;
+namespace Course.DataAccess.Repositories;
 
 public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class
 {

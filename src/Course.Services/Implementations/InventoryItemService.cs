@@ -1,4 +1,4 @@
-using Course.Domain.Abstractions;
+using Course.DataAccess.UnitOfWork;
 using Course.Domain.Entities;
 using Course.Domain.Enums;
 using Course.Domain.Exceptions;

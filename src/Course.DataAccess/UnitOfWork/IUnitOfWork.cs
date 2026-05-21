@@ -1,4 +1,6 @@
-namespace Course.Domain.Abstractions;
+using Course.DataAccess.Repositories;
+
+namespace Course.DataAccess.UnitOfWork;
 
 public interface IUnitOfWork
 {
