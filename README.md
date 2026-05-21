@@ -18,6 +18,17 @@ This is the initial scaffold for the inventory management web app. It includes I
 ## Run
 - dotnet run
 
+## Deploy to Azure
+This repository includes a GitHub Actions workflow at `.github/workflows/azure-webapp-deploy.yml` that builds and deploys `Course.WebApp` to Azure Web App.
+
+Required GitHub repository secrets:
+- `AZURE_WEBAPP_NAME`: Azure Web App name.
+- `AZURE_WEBAPP_PUBLISH_PROFILE`: Publish profile XML downloaded from the Azure Portal.
+
+Deployment triggers:
+- Push to `main`.
+- Manual run from the Actions tab (`workflow_dispatch`).
+
 ## Notes
 - All tables are rendered in table views (no row-level action buttons).
 - Search, theme, and language selection are available in the top header.
