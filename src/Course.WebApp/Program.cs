@@ -74,7 +74,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
 });
 
-builder.WebHost.UseUrls("http://localhost:5100");
+builder.WebHost.UseUrls("http://0.0.0.0:5100");
 var app = builder.Build();
 
 // Seed data

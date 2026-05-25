@@ -67,7 +67,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.WebHost.UseUrls("http://localhost:5200");
+builder.WebHost.UseUrls("http://0.0.0.0:5200");
 var app = builder.Build();
 
 // Run DB seeding
