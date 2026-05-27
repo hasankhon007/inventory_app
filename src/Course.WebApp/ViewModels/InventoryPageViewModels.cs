@@ -60,6 +60,15 @@ public class InventoryItemsViewModel
 {
     public InventoryPageNavViewModel Nav { get; set; } = new();
     public IReadOnlyList<InventoryItemListViewModel> Items { get; set; } = Array.Empty<InventoryItemListViewModel>();
+    public IReadOnlyList<CustomFieldColumnViewModel> FieldColumns { get; set; } = Array.Empty<CustomFieldColumnViewModel>();
+    public string? SearchQuery { get; set; }
+}
+
+public class CustomFieldColumnViewModel
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public InventoryFieldType FieldType { get; set; }
 }
 
 public class InventoryItemCreateViewModel
@@ -72,48 +81,65 @@ public class InventoryItemCreateViewModel
     public string Name { get; set; } = string.Empty;
 
     [Required]
+    [MaxLength(2000)]
+    public string Description { get; set; } = string.Empty;
+
+    [Required]
     [Range(typeof(decimal), "0", "9999999999")]
     public decimal? Price { get; set; }
 
-    public string? PriceLabel { get; set; }
+    [ValidateNever]
+    public IReadOnlyList<CustomFieldInputViewModel> FieldDefinitions { get; set; }
+        = Array.Empty<CustomFieldInputViewModel>();
 
-    public IReadOnlyList<InventoryItemFieldInputViewModel> NumberFields { get; set; }
-        = Array.Empty<InventoryItemFieldInputViewModel>();
-
-    public IReadOnlyList<InventoryItemFieldInputViewModel> Fields { get; set; }
-        = Array.Empty<InventoryItemFieldInputViewModel>();
+    public Dictionary<string, string?> FieldValues { get; set; } = new();
 }
 
-public class InventoryItemFieldInputViewModel
+public class InventoryItemEditViewModel
 {
-    public Guid Id { get; set; }
-    public Guid FieldId { get; set; }
-    public InventoryFieldType FieldType { get; set; }
-    public int SlotIndex { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string? Description { get; set; }
+    public InventoryPageNavViewModel Nav { get; set; } = new();
+    public Guid InventoryId { get; set; }
+    public Guid ItemId { get; set; }
 
+    [Required]
     [MaxLength(256)]
-    public string? TextValue { get; set; }
+    public string Name { get; set; } = string.Empty;
 
+    [Required]
     [MaxLength(2000)]
-    public string? MultiTextValue { get; set; }
+    public string Description { get; set; } = string.Empty;
 
-    [MaxLength(2048)]
-    public string? LinkValue { get; set; }
-
+    [Required]
     [Range(typeof(decimal), "0", "9999999999")]
-    public decimal? NumberValue { get; set; }
+    public decimal? Price { get; set; }
 
-    public bool BoolValue { get; set; }
+    [ValidateNever]
+    public IReadOnlyList<CustomFieldInputViewModel> FieldDefinitions { get; set; }
+        = Array.Empty<CustomFieldInputViewModel>();
+
+    public Dictionary<string, string?> FieldValues { get; set; } = new();
+}
+
+public class CustomFieldInputViewModel
+{
+    public Guid CustomFieldId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public InventoryFieldType FieldType { get; set; }
+    public bool IsRequired { get; set; }
+    public string? SettingsJson { get; set; }
+    public string? Value { get; set; }
+    public List<string>? SelectOptions { get; set; }
 }
 
 public class InventoryItemListViewModel
 {
+    public Guid Id { get; set; }
     public string CustomId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
-    public decimal? Price { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public decimal Price { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
+    public Dictionary<Guid, string?> FieldValues { get; set; } = new();
 }
 
 public class InventoryAccessViewModel
@@ -140,11 +166,12 @@ public class InventoryFieldsViewModel
 public class InventoryFieldListItemViewModel
 {
     public Guid Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string? Description { get; set; }
+    public string Name { get; set; } = string.Empty;
     public InventoryFieldType FieldType { get; set; }
-    public int SlotIndex { get; set; }
-    public bool ShowInTable { get; set; }
+    public bool IsRequired { get; set; }
+    public int DisplayOrder { get; set; }
+    public string? SettingsJson { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 }
 
 public class InventoryTagsViewModel

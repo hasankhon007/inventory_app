@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using Course.Services.Implementations;
 
 namespace Course.WebApp.Controllers;
 
@@ -19,7 +23,7 @@ public class InventoriesController : Controller
     private readonly IInventoryService _inventoryService;
     private readonly IInventoryItemService _inventoryItemService;
     private readonly IInventoryAccessService _inventoryAccessService;
-    private readonly IInventoryFieldService _inventoryFieldService;
+    private readonly ICustomFieldService _customFieldService;
     private readonly IInventoryTagService _inventoryTagService;
     private readonly IInventoryCreateValidator _inventoryCreateValidator;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -30,7 +34,7 @@ public class InventoriesController : Controller
         IInventoryService inventoryService,
         IInventoryItemService inventoryItemService,
         IInventoryAccessService inventoryAccessService,
-        IInventoryFieldService inventoryFieldService,
+        ICustomFieldService customFieldService,
         IInventoryTagService inventoryTagService,
         IInventoryCreateValidator inventoryCreateValidator,
         UserManager<ApplicationUser> userManager,
@@ -40,7 +44,7 @@ public class InventoriesController : Controller
         _adminService = adminService;
         _inventoryItemService = inventoryItemService;
         _inventoryAccessService = inventoryAccessService;
-        _inventoryFieldService = inventoryFieldService;
+        _customFieldService = customFieldService;
         _inventoryTagService = inventoryTagService;
         _inventoryCreateValidator = inventoryCreateValidator;
         _userManager = userManager;
@@ -471,16 +475,7 @@ public class InventoriesController : Controller
             }
 
             var details = await _inventoryService.GetDetailsAsync(id);
-            var fieldsDto = await _inventoryItemService.GetFieldInputsAsync(id);
-
-            var definitions = await _unitOfWork.Repository<InventoryFieldDefinition>().Query()
-                .AsNoTracking()
-                .Where(f => f.InventoryId == id)
-                .OrderBy(f => f.SortOrder)
-                .ToListAsync();
-
-            var numberFields = definitions.Where(f => f.FieldType == InventoryFieldType.Number).ToList();
-            var priceLabel = numberFields.Count > 0 ? numberFields[0].Title : "Price";
+            var fieldInputs = await _inventoryItemService.GetFieldInputsAsync(id);
 
             var model = new InventoryItemCreateViewModel
             {
@@ -494,26 +489,15 @@ public class InventoriesController : Controller
                     CanAddItems = accessSnapshot.CanAddItems
                 },
                 InventoryId = id,
-                PriceLabel = priceLabel,
-                Fields = fieldsDto.Where(f => !string.Equals(f.FieldType, InventoryFieldType.Number.ToString(), StringComparison.OrdinalIgnoreCase)).Select(f => new InventoryItemFieldInputViewModel
+                FieldDefinitions = fieldInputs.Select(f => new CustomFieldInputViewModel
                 {
-                    Id = f.FieldDefinitionId,
-                    FieldId = f.FieldDefinitionId,
+                    CustomFieldId = f.CustomFieldId,
+                    Name = f.Name,
                     FieldType = Enum.Parse<InventoryFieldType>(f.FieldType),
-                    SlotIndex = f.SlotIndex,
-                    Title = f.Title,
-                    Description = f.Description,
-                    TextValue = f.Value
-                }).ToList()
-                ,
-                NumberFields = definitions.Where(f => f.FieldType == InventoryFieldType.Number).Skip(1).Select(f => new InventoryItemFieldInputViewModel
-                {
-                    Id = f.Id,
-                    FieldId = f.Id,
-                    FieldType = f.FieldType,
-                    SlotIndex = f.SlotIndex,
-                    Title = f.Title,
-                    Description = f.Description
+                    IsRequired = f.IsRequired,
+                    SettingsJson = f.SettingsJson,
+                    Value = f.Value,
+                    SelectOptions = f.SelectOptions
                 }).ToList()
             };
 
@@ -544,14 +528,6 @@ public class InventoriesController : Controller
             }
 
             var details = await _inventoryService.GetDetailsAsync(id);
-            var definitions = await _unitOfWork.Repository<InventoryFieldDefinition>().Query()
-                .AsNoTracking()
-                .Where(f => f.InventoryId == id)
-                .OrderBy(f => f.SortOrder)
-                .ToListAsync();
-
-            var numberFields = definitions.Where(f => f.FieldType == InventoryFieldType.Number).ToList();
-            model.PriceLabel = numberFields.Count == 1 ? numberFields[0].Title : "Price";
             model.Nav = new InventoryPageNavViewModel
             {
                 InventoryId = id,
@@ -561,51 +537,40 @@ public class InventoriesController : Controller
                 CanAddItems = accessSnapshot.CanAddItems
             };
 
+            // Reload field definitions for re-rendering
+            var fieldInputs = await _inventoryItemService.GetFieldInputsAsync(id);
+            model.FieldDefinitions = fieldInputs.Select(f => new CustomFieldInputViewModel
+            {
+                CustomFieldId = f.CustomFieldId,
+                Name = f.Name,
+                FieldType = Enum.Parse<InventoryFieldType>(f.FieldType),
+                IsRequired = f.IsRequired,
+                SettingsJson = f.SettingsJson,
+                Value = model.FieldValues.TryGetValue(f.CustomFieldId.ToString(), out var v) ? v : f.Value,
+                SelectOptions = f.SelectOptions
+            }).ToList();
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var validationErrors = ValidateItemFieldValues(definitions, model);
-            foreach (var validationError in validationErrors)
+            // Build field values dictionary (string key → Guid key)
+            var fieldValues = new Dictionary<Guid, string?>();
+            foreach (var (key, value) in model.FieldValues)
             {
-                ModelState.AddModelError(string.Empty, validationError);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
+                if (Guid.TryParse(key, out var fieldId))
+                {
+                    fieldValues[fieldId] = value;
+                }
             }
 
             var createDto = new ItemCreateDto
             {
                 Name = model.Name,
+                Description = model.Description,
                 Price = model.Price ?? 0,
-                Fields = model.Fields.Select(f => new ItemFieldInputDto
-                {
-                    FieldDefinitionId = f.FieldId,
-                    FieldType = f.FieldType.ToString(),
-                    SlotIndex = f.SlotIndex,
-                    Title = f.Title,
-                    Description = f.Description,
-                    Value = f.FieldType switch
-                    {
-                        InventoryFieldType.SingleLineText => f.TextValue,
-                        InventoryFieldType.MultiLineText => f.MultiTextValue,
-                        InventoryFieldType.Link => f.LinkValue,
-                        InventoryFieldType.Boolean => f.BoolValue.ToString(),
-                        InventoryFieldType.Number => f.NumberValue?.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                        _ => null
-                    }
-                }).Concat(model.NumberFields.Select(f => new ItemFieldInputDto
-                {
-                    FieldDefinitionId = f.FieldId,
-                    FieldType = f.FieldType.ToString(),
-                    SlotIndex = f.SlotIndex,
-                    Title = f.Title,
-                    Description = f.Description,
-                    Value = f.NumberValue?.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                })).ToList()
+                FieldValues = fieldValues
             };
 
             await _inventoryItemService.CreateItemAsync(id, createDto, userId);
@@ -623,7 +588,138 @@ public class InventoriesController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Items(Guid id)
+    public async Task<IActionResult> EditItem(Guid id, Guid itemId)
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            var accessSnapshot = await _inventoryService.GetAccessSnapshotAsync(id, userId);
+
+            if (!accessSnapshot.CanWrite && !accessSnapshot.IsOwner)
+            {
+                return Forbid();
+            }
+
+            var details = await _inventoryService.GetDetailsAsync(id);
+            var item = await _inventoryItemService.GetItemAsync(itemId, userId);
+            var fieldInputs = await _inventoryItemService.GetFieldInputsAsync(id, itemId);
+
+            var model = new InventoryItemEditViewModel
+            {
+                Nav = new InventoryPageNavViewModel
+                {
+                    InventoryId = id,
+                    Title = details.Title,
+                    ActiveTab = "items",
+                    CanEdit = accessSnapshot.CanWrite,
+                    CanManageAccess = accessSnapshot.CanManage,
+                    CanAddItems = accessSnapshot.CanAddItems
+                },
+                InventoryId = id,
+                ItemId = itemId,
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                FieldDefinitions = fieldInputs.Select(f => new CustomFieldInputViewModel
+                {
+                    CustomFieldId = f.CustomFieldId,
+                    Name = f.Name,
+                    FieldType = Enum.Parse<InventoryFieldType>(f.FieldType),
+                    IsRequired = f.IsRequired,
+                    SettingsJson = f.SettingsJson,
+                    Value = f.Value,
+                    SelectOptions = f.SelectOptions
+                }).ToList(),
+                FieldValues = fieldInputs.ToDictionary(f => f.CustomFieldId.ToString(), f => f.Value)
+            };
+
+            return View(model);
+        }
+        catch (NotFoundAppException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditItem(Guid id, InventoryItemEditViewModel model)
+    {
+        if (id != model.InventoryId)
+        {
+            return BadRequest();
+        }
+
+        var userId = _userManager.GetUserId(User);
+        try
+        {
+            var accessSnapshot = await _inventoryService.GetAccessSnapshotAsync(id, userId);
+            if (!accessSnapshot.CanWrite && !accessSnapshot.IsOwner)
+            {
+                return Forbid();
+            }
+
+            var details = await _inventoryService.GetDetailsAsync(id);
+            model.Nav = new InventoryPageNavViewModel
+            {
+                InventoryId = id,
+                Title = details.Title,
+                ActiveTab = "items",
+                CanEdit = accessSnapshot.CanWrite,
+                CanAddItems = accessSnapshot.CanAddItems
+            };
+
+            var fieldInputs = await _inventoryItemService.GetFieldInputsAsync(id, model.ItemId);
+            model.FieldDefinitions = fieldInputs.Select(f => new CustomFieldInputViewModel
+            {
+                CustomFieldId = f.CustomFieldId,
+                Name = f.Name,
+                FieldType = Enum.Parse<InventoryFieldType>(f.FieldType),
+                IsRequired = f.IsRequired,
+                SettingsJson = f.SettingsJson,
+                Value = model.FieldValues.TryGetValue(f.CustomFieldId.ToString(), out var v) ? v : f.Value,
+                SelectOptions = f.SelectOptions
+            }).ToList();
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var fieldValues = new Dictionary<Guid, string?>();
+            foreach (var (key, value) in model.FieldValues)
+            {
+                if (Guid.TryParse(key, out var fieldId))
+                {
+                    fieldValues[fieldId] = value;
+                }
+            }
+
+            var editDto = new ItemEditDto
+            {
+                Id = model.ItemId,
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price ?? 0,
+                FieldValues = fieldValues
+            };
+
+            await _inventoryItemService.UpdateItemAsync(id, editDto, userId);
+            return RedirectToAction(nameof(Items), new { id });
+        }
+        catch (NotFoundAppException)
+        {
+            return NotFound();
+        }
+        catch (ValidationAppException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(model);
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Items(Guid id, string? q)
     {
         try
         {
@@ -636,7 +732,12 @@ public class InventoriesController : Controller
                 return Forbid();
             }
 
-            var items = await _inventoryItemService.GetItemsAsync(id, userId);
+            var items = string.IsNullOrWhiteSpace(q)
+                ? await _inventoryItemService.GetItemsAsync(id, userId)
+                : await _inventoryItemService.SearchItemsAsync(id, q, userId);
+
+            var customFields = await _customFieldService.GetFieldsAsync(id, userId ?? string.Empty);
+
             var model = new InventoryItemsViewModel
             {
                 Nav = new InventoryPageNavViewModel
@@ -650,14 +751,152 @@ public class InventoriesController : Controller
                 },
                 Items = items.Select(i => new InventoryItemListViewModel
                 {
+                    Id = i.Id,
                     CustomId = i.CustomId,
                     Name = i.Name,
+                    Description = i.Description,
                     Price = i.Price,
-                    UpdatedAt = i.UpdatedAt
-                }).ToList()
+                    UpdatedAt = i.UpdatedAt,
+                    FieldValues = i.FieldValues
+                }).ToList(),
+                FieldColumns = customFields.Select(f => new CustomFieldColumnViewModel
+                {
+                    Id = f.Id,
+                    Name = f.Name,
+                    FieldType = Enum.Parse<InventoryFieldType>(f.FieldType)
+                }).ToList(),
+                SearchQuery = q
             };
 
             return View(model);
+        }
+        catch (NotFoundAppException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportItems(Guid id)
+    {
+        try
+        {
+            var details = await _inventoryService.GetDetailsAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var accessSnapshot = await _inventoryService.GetAccessSnapshotAsync(id, userId);
+
+            if (!accessSnapshot.CanView)
+            {
+                return Forbid();
+            }
+
+            var items = await _inventoryItemService.GetItemsAsync(id, userId);
+            var customFields = await _customFieldService.GetFieldsAsync(id, userId ?? string.Empty);
+
+            // Build headers: fixed + dynamic
+            var headers = new List<string> { "Custom ID", "Name", "Description", "Price", "Updated At" };
+            headers.AddRange(customFields.Select(f => f.Name));
+
+            var sb = new StringBuilder();
+            sb.AppendLine(string.Join(",", headers.Select(CsvEscape)));
+
+            foreach (var item in items)
+            {
+                var row = new List<string>
+                {
+                    item.CustomId,
+                    item.Name,
+                    item.Description,
+                    item.Price.ToString(CultureInfo.InvariantCulture),
+                    item.UpdatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
+                };
+
+                foreach (var field in customFields)
+                {
+                    var fieldId = Guid.Parse(field.Id.ToString());
+                    row.Add(item.FieldValues.TryGetValue(fieldId, out var value) ? value ?? string.Empty : string.Empty);
+                }
+
+                sb.AppendLine(string.Join(",", row.Select(CsvEscape)));
+            }
+
+            var fileName = $"{SanitizeFileName(details.Title)}-items-{DateTimeOffset.UtcNow:yyyyMMddHHmm}.csv";
+            var bytes = new UTF8Encoding(true).GetBytes(sb.ToString());
+            return File(bytes, "text/csv", fileName);
+        }
+        catch (NotFoundAppException)
+        {
+            return NotFound();
+        }
+        catch (UnauthorizedAppException)
+        {
+            return Challenge();
+        }
+        catch (ForbiddenAppException)
+        {
+            return Forbid();
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportItemsExcel(Guid id)
+    {
+        try
+        {
+            var details = await _inventoryService.GetDetailsAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var accessSnapshot = await _inventoryService.GetAccessSnapshotAsync(id, userId);
+
+            if (!accessSnapshot.CanView)
+            {
+                return Forbid();
+            }
+
+            var items = await _inventoryItemService.GetItemsAsync(id, userId);
+            var customFields = await _customFieldService.GetFieldsAsync(id, userId ?? string.Empty);
+
+            using var workbook = new ClosedXML.Excel.XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Items");
+
+            // Build headers
+            var headers = new List<string> { "Custom ID", "Name", "Description", "Price", "Updated At" };
+            headers.AddRange(customFields.Select(f => f.Name));
+
+            for (var i = 0; i < headers.Count; i++)
+            {
+                worksheet.Cell(1, i + 1).Value = headers[i];
+                worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+            }
+
+            var rowIndex = 2;
+            foreach (var item in items)
+            {
+                worksheet.Cell(rowIndex, 1).Value = item.CustomId;
+                worksheet.Cell(rowIndex, 2).Value = item.Name;
+                worksheet.Cell(rowIndex, 3).Value = item.Description;
+                worksheet.Cell(rowIndex, 4).Value = item.Price;
+                worksheet.Cell(rowIndex, 5).Value = item.UpdatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+
+                var colIndex = 6;
+                foreach (var field in customFields)
+                {
+                    if (item.FieldValues.TryGetValue(field.Id, out var value))
+                    {
+                        worksheet.Cell(rowIndex, colIndex).Value = value ?? string.Empty;
+                    }
+                    colIndex++;
+                }
+                rowIndex++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            var fileName = $"{SanitizeFileName(details.Title)}-items-{DateTimeOffset.UtcNow:yyyyMMddHHmm}.xlsx";
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
         catch (NotFoundAppException)
         {
@@ -723,7 +962,7 @@ public class InventoriesController : Controller
                 return Forbid();
             }
 
-            var fields = await _inventoryFieldService.GetFieldsAsync(id, userId);
+            var fields = await _customFieldService.GetFieldsAsync(id, userId);
             var model = new InventoryFieldsViewModel
             {
                 Nav = new InventoryPageNavViewModel
@@ -738,11 +977,12 @@ public class InventoriesController : Controller
                 Fields = fields.Select(f => new InventoryFieldListItemViewModel
                 {
                     Id = f.Id,
-                    Title = f.Title,
-                    Description = f.Description,
+                    Name = f.Name,
                     FieldType = Enum.Parse<InventoryFieldType>(f.FieldType),
-                    SlotIndex = f.SlotIndex,
-                    ShowInTable = f.ShowInTable
+                    IsRequired = f.IsRequired,
+                    DisplayOrder = f.DisplayOrder,
+                    SettingsJson = f.SettingsJson,
+                    CreatedAt = f.CreatedAt
                 }).ToList()
             };
 
@@ -877,12 +1117,12 @@ public class InventoriesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddField(Guid id, InventoryFieldDto field)
+    public async Task<IActionResult> AddField([FromRoute] Guid id, CustomFieldCreateRequest request)
     {
         try
         {
             var userId = _userManager.GetUserId(User);
-            await _inventoryFieldService.AddFieldAsync(id, field, userId);
+            await _customFieldService.AddFieldAsync(id, request, userId);
             return RedirectToAction(nameof(Fields), new { id });
         }
         catch (Exception ex) when (ex is ValidationAppException or ForbiddenAppException or NotFoundAppException)
@@ -894,12 +1134,12 @@ public class InventoriesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UpdateField(Guid id, InventoryFieldDto field)
+    public async Task<IActionResult> UpdateField([FromRoute] Guid id, CustomFieldUpdateRequest request)
     {
         try
         {
             var userId = _userManager.GetUserId(User);
-            await _inventoryFieldService.UpdateFieldAsync(id, field, userId);
+            await _customFieldService.UpdateFieldAsync(id, request, userId);
             return RedirectToAction(nameof(Fields), new { id });
         }
         catch (Exception ex) when (ex is ValidationAppException or ForbiddenAppException or NotFoundAppException)
@@ -911,18 +1151,55 @@ public class InventoriesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RemoveField(Guid id, Guid fieldId)
+    public async Task<IActionResult> RemoveField([FromRoute] Guid id, Guid fieldId)
     {
         try
         {
             var userId = _userManager.GetUserId(User);
-            await _inventoryFieldService.RemoveFieldAsync(id, fieldId, userId);
+            await _customFieldService.DeleteFieldAsync(id, fieldId, userId);
             return RedirectToAction(nameof(Fields), new { id });
         }
         catch (Exception ex) when (ex is ValidationAppException or ForbiddenAppException or NotFoundAppException)
         {
             TempData["FieldError"] = ex.Message;
             return RedirectToAction(nameof(Fields), new { id });
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ReorderFields([FromRoute] Guid id, ReorderFieldsRequest request)
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            await _customFieldService.ReorderFieldsAsync(id, request, userId);
+            return RedirectToAction(nameof(Fields), new { id });
+        }
+        catch (Exception ex) when (ex is ValidationAppException or ForbiddenAppException or NotFoundAppException)
+        {
+            TempData["FieldError"] = ex.Message;
+            return RedirectToAction(nameof(Fields), new { id });
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteItem(Guid id, Guid itemId)
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            await _inventoryItemService.DeleteItemAsync(itemId, userId);
+            return RedirectToAction(nameof(Items), new { id });
+        }
+        catch (NotFoundAppException)
+        {
+            return NotFound();
+        }
+        catch (ForbiddenAppException)
+        {
+            return Forbid();
         }
     }
 
@@ -998,51 +1275,27 @@ public class InventoriesController : Controller
             .ToList();
     }
 
-    private static List<string> ValidateItemFieldValues(IEnumerable<InventoryFieldDefinition> definitions, InventoryItemCreateViewModel model)
+    private static string CsvEscape(string? value)
     {
-        var errors = new List<string>();
-        var numberInputs = model.NumberFields.ToList();
-        var firstNumberDefinition = definitions.FirstOrDefault(definition => definition.FieldType == InventoryFieldType.Number);
-
-        foreach (var definition in definitions)
+        if (string.IsNullOrEmpty(value))
         {
-            if (definition.FieldType == InventoryFieldType.Number)
-            {
-                if (firstNumberDefinition != null && definition.Id == firstNumberDefinition.Id)
-                {
-                    if (!model.Price.HasValue)
-                    {
-                        errors.Add($"{definition.Title} is required.");
-                    }
-                }
-                else
-                {
-                    var numberField = numberInputs.FirstOrDefault(field => field.FieldId == definition.Id);
-                    if (numberField == null || !numberField.NumberValue.HasValue)
-                    {
-                        errors.Add($"{definition.Title} is required.");
-                    }
-                }
-
-                continue;
-            }
-
-            var fieldInput = model.Fields.FirstOrDefault(field => field.FieldId == definition.Id);
-            var valueMissing = definition.FieldType switch
-            {
-                InventoryFieldType.SingleLineText => string.IsNullOrWhiteSpace(fieldInput?.TextValue),
-                InventoryFieldType.MultiLineText => string.IsNullOrWhiteSpace(fieldInput?.MultiTextValue),
-                InventoryFieldType.Link => string.IsNullOrWhiteSpace(fieldInput?.LinkValue),
-                InventoryFieldType.Boolean => fieldInput == null,
-                _ => true
-            };
-
-            if (valueMissing)
-            {
-                errors.Add($"{definition.Title} is required.");
-            }
+            return string.Empty;
         }
 
-        return errors;
+        var needsQuotes = value.Contains(',') || value.Contains('"') || value.Contains('\n') || value.Contains('\r');
+        var escaped = value.Replace("\"", "\"\"");
+        return needsQuotes ? $"\"{escaped}\"" : escaped;
+    }
+
+    private static string SanitizeFileName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return "inventory";
+        }
+
+        var invalidChars = Path.GetInvalidFileNameChars();
+        var sanitized = new string(name.Select(ch => invalidChars.Contains(ch) ? '_' : ch).ToArray()).Trim();
+        return string.IsNullOrWhiteSpace(sanitized) ? "inventory" : sanitized;
     }
 }

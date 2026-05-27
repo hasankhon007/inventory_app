@@ -1,0 +1,32 @@
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var pageName = ViewContext.RouteData.Values["page"]?.ToString();
+}
+<div class="glass-panel p-3">
+    <ul class="nav nav-pills flex-column gap-2">
+        <li class="nav-item">
+            <a class="nav-link @(pageName == "/Account/Manage/Index" ? "active bg-primary text-white" : "text-dark")" id="profile" asp-page="./Index">
+                <i class="bi bi-person-circle me-2"></i> Profile
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(pageName == "/Account/Manage/Email" ? "active bg-primary text-white" : "text-dark")" id="email" asp-page="./Email">
+                <i class="bi bi-envelope-fill me-2"></i> Email
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(pageName == "/Account/Manage/ChangePassword" ? "active bg-primary text-white" : "text-dark")" id="change-password" asp-page="./ChangePassword">
+                <i class="bi bi-key-fill me-2"></i> Password
+            </a>
+        </li>
+        @if (hasExternalLogins)
+        {
+            <li class="nav-item">
+                <a class="nav-link @(pageName == "/Account/Manage/ExternalLogins" ? "active bg-primary text-white" : "text-dark")" id="external-login" asp-page="./ExternalLogins">
+                    <i class="bi bi-shield-lock-fill me-2"></i> External logins
+                </a>
+            </li>
+        }
+    </ul>
+</div>

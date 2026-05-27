@@ -33,7 +33,6 @@
                     <form asp-action="UpdateIdFormat" asp-route-id="@Model.Id" method="post">
                         <div class="mb-3">
                             @{ ViewData["InputName"] = "idFormat"; ViewData["InputId"] = "detailsIdFormatInput"; }
-                            <label class="form-label">@Localizer["IdFormatLabel"]</label>
                             @await Html.PartialAsync("_IdFormatEditor", Model.IdFormat)
                         </div>
                         <button type="submit" class="btn btn-primary">@Localizer["IdFormatUpdate"]</button>

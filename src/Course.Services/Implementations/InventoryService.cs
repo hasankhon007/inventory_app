@@ -280,7 +280,8 @@ public class InventoryService : IInventoryService
         }
 
         var access = await GetAccessSnapshotAsync(id, currentUserId);
-        if (!access.IsOwner && !access.IsOwner) // only owner (or admin) can delete
+        var isAdmin = IsCurrentUserAdmin();
+        if (!access.IsOwner && !isAdmin) // only owner or admin can delete
         {
             throw new ForbiddenAppException("Access denied.");
         }
@@ -332,9 +333,9 @@ public class InventoryService : IInventoryService
             .Select(group => new InventoryStatsDto
             {
                 ItemsCount = group.Count(),
-                AvgPrice = group.Average(item => item.NumberValue1),
-                MinPrice = group.Min(item => item.NumberValue1),
-                MaxPrice = group.Max(item => item.NumberValue1),
+                AvgPrice = group.Average(item => item.Price),
+                MinPrice = group.Min(item => item.Price),
+                MaxPrice = group.Max(item => item.Price),
                 LastItemUpdatedAt = group.Max(item => item.UpdatedAt)
             })
             .FirstOrDefaultAsync();
@@ -455,8 +456,8 @@ public class InventoryService : IInventoryService
         }
 
         var canView = inventory.IsPublic || isAdmin || isOwner || hasAccess;
-        var canEdit = isAdmin || isOwner || hasWriteAccess || inventory.IsPublic;
-        var canAddItems = canEdit || inventory.IsPublic;
+        var canEdit = isAdmin || isOwner || hasWriteAccess;
+        var canAddItems = canEdit || (inventory.IsPublic && !string.IsNullOrWhiteSpace(currentUserId));
 
         return new AccessSnapshotDto
         {

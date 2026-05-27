@@ -1,10 +1,10 @@
 @using Course.WebApp.ViewModels
 @using Course.Domain.Enums
 @using Microsoft.Extensions.Localization
-@model Course.WebApp.ViewModels.InventoryItemCreateViewModel
+@model Course.WebApp.ViewModels.InventoryItemEditViewModel
 @inject IStringLocalizer<Course.WebApp.SharedResource> Localizer
 @{
-    ViewData["Title"] = $"{Model.Nav.Title} - {Localizer["AddItem"]}";
+    ViewData["Title"] = $"{Model.Nav.Title} - Edit Item";
 }
 
 @await Html.PartialAsync("_InventoryMenu", Model.Nav)
@@ -13,10 +13,11 @@
     <div class="col-12 col-lg-8">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h1 class="h5">@Localizer["AddItem"]</h1>
-                <form asp-action="CreateItem" asp-route-id="@Model.InventoryId" method="post" novalidate>
+                <h1 class="h5">Edit Item</h1>
+                <form asp-action="EditItem" asp-route-id="@Model.InventoryId" method="post" novalidate>
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="InventoryId" />
+                    <input type="hidden" asp-for="ItemId" />
 
                     @* ===== Fixed Fields ===== *@
                     <div class="mb-3">
@@ -75,7 +76,6 @@
                                            value="@existingValue"
                                            class="form-control"
                                            id="field_@fieldKey"
-                                           placeholder="@Localizer["SampleSingleLine"]"
                                            @requiredAttr />
                                 }
                                 else if (field.FieldType == InventoryFieldType.MultiLineText)
@@ -88,7 +88,6 @@
                                               class="form-control"
                                               id="field_@fieldKey"
                                               rows="3"
-                                              placeholder="@Localizer["SampleMultiLine"]"
                                               @requiredAttr>@existingValue</textarea>
                                 }
                                 else if (field.FieldType == InventoryFieldType.Number)
@@ -103,7 +102,6 @@
                                            class="form-control"
                                            id="field_@fieldKey"
                                            step="any"
-                                           placeholder="@Localizer["SampleNumber"]"
                                            @requiredAttr />
                                 }
                                 else if (field.FieldType == InventoryFieldType.Url || field.FieldType == InventoryFieldType.Link)
@@ -117,7 +115,6 @@
                                            value="@existingValue"
                                            class="form-control"
                                            id="field_@fieldKey"
-                                           placeholder="@Localizer["SampleLink"]"
                                            @requiredAttr />
                                 }
                                 else if (field.FieldType == InventoryFieldType.OneFromList)
@@ -145,7 +142,7 @@
                     }
 
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">@Localizer["AddItem"]</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
                         <a class="btn btn-outline-secondary" asp-action="Items" asp-route-id="@Model.InventoryId">@Localizer["InventoryItems"]</a>
                     </div>
                 </form>

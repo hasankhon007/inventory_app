@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Course.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260521160705_Initial")]
+    [Migration("20260527055852_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Course.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.27")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -99,6 +99,48 @@ namespace Course.DataAccess.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Course.Domain.Entities.CustomField", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FieldType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("InventoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("SettingsJson")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InventoryId", "Name")
+                        .IsUnique()
+                        .HasFilter("\"IsDeleted\" = false");
+
+                    b.ToTable("CustomFields");
                 });
 
             modelBuilder.Entity("Course.Domain.Entities.DiscussionPost", b =>
@@ -227,44 +269,6 @@ namespace Course.DataAccess.Migrations
                     b.ToTable("InventoryCategories");
                 });
 
-            modelBuilder.Entity("Course.Domain.Entities.InventoryFieldDefinition", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(400)
-                        .HasColumnType("character varying(400)");
-
-                    b.Property<int>("FieldType")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("InventoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("ShowInTable")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("SlotIndex")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InventoryId", "FieldType", "SlotIndex")
-                        .IsUnique();
-
-                    b.ToTable("InventoryFieldDefinitions");
-                });
-
             modelBuilder.Entity("Course.Domain.Entities.InventoryIdElement", b =>
                 {
                     b.Property<Guid>("Id")
@@ -316,15 +320,6 @@ namespace Course.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("BoolValue1")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("BoolValue2")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("BoolValue3")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -338,47 +333,20 @@ namespace Course.DataAccess.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
                     b.Property<Guid>("InventoryId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("LinkValue1")
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
-                    b.Property<string>("LinkValue2")
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
-                    b.Property<string>("LinkValue3")
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
-                    b.Property<string>("MultiTextValue1")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
-
-                    b.Property<string>("MultiTextValue2")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
-
-                    b.Property<string>("MultiTextValue3")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<decimal?>("NumberValue1")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
-
-                    b.Property<decimal?>("NumberValue2")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
-
-                    b.Property<decimal?>("NumberValue3")
+                    b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
@@ -388,18 +356,6 @@ namespace Course.DataAccess.Migrations
 
                     b.Property<int?>("SequenceNumber")
                         .HasColumnType("integer");
-
-                    b.Property<string>("TextValue1")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("TextValue2")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("TextValue3")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -418,6 +374,32 @@ namespace Course.DataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("Course.Domain.Entities.ItemFieldValue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CustomFieldId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Value")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("ItemId", "CustomFieldId")
+                        .IsUnique();
+
+                    b.ToTable("ItemFieldValues");
                 });
 
             modelBuilder.Entity("Course.Domain.Entities.ItemLike", b =>
@@ -599,6 +581,17 @@ namespace Course.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Course.Domain.Entities.CustomField", b =>
+                {
+                    b.HasOne("Course.Domain.Entities.Inventory", "Inventory")
+                        .WithMany("CustomFields")
+                        .HasForeignKey("InventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inventory");
+                });
+
             modelBuilder.Entity("Course.Domain.Entities.DiscussionPost", b =>
                 {
                     b.HasOne("Course.Domain.Entities.Inventory", "Inventory")
@@ -654,17 +647,6 @@ namespace Course.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Course.Domain.Entities.InventoryFieldDefinition", b =>
-                {
-                    b.HasOne("Course.Domain.Entities.Inventory", "Inventory")
-                        .WithMany("FieldDefinitions")
-                        .HasForeignKey("InventoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Inventory");
-                });
-
             modelBuilder.Entity("Course.Domain.Entities.InventoryIdElement", b =>
                 {
                     b.HasOne("Course.Domain.Entities.Inventory", "Inventory")
@@ -718,6 +700,25 @@ namespace Course.DataAccess.Migrations
                     b.Navigation("Inventory");
 
                     b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Course.Domain.Entities.ItemFieldValue", b =>
+                {
+                    b.HasOne("Course.Domain.Entities.CustomField", "CustomField")
+                        .WithMany("FieldValues")
+                        .HasForeignKey("CustomFieldId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Course.Domain.Entities.Item", "Item")
+                        .WithMany("FieldValues")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("Course.Domain.Entities.ItemLike", b =>
@@ -790,13 +791,18 @@ namespace Course.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Course.Domain.Entities.CustomField", b =>
+                {
+                    b.Navigation("FieldValues");
+                });
+
             modelBuilder.Entity("Course.Domain.Entities.Inventory", b =>
                 {
                     b.Navigation("AccessList");
 
-                    b.Navigation("DiscussionPosts");
+                    b.Navigation("CustomFields");
 
-                    b.Navigation("FieldDefinitions");
+                    b.Navigation("DiscussionPosts");
 
                     b.Navigation("IdElements");
 
@@ -807,6 +813,8 @@ namespace Course.DataAccess.Migrations
 
             modelBuilder.Entity("Course.Domain.Entities.Item", b =>
                 {
+                    b.Navigation("FieldValues");
+
                     b.Navigation("Likes");
                 });
 

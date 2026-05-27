@@ -219,6 +219,31 @@ namespace Course.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomFields",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    InventoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
+                    FieldType = table.Column<int>(type: "integer", nullable: false),
+                    IsRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    SettingsJson = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomFields", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomFields_Inventories_InventoryId",
+                        column: x => x.InventoryId,
+                        principalTable: "Inventories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DiscussionPosts",
                 columns: table => new
                 {
@@ -265,30 +290,6 @@ namespace Course.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_InventoryAccesses_Inventories_InventoryId",
-                        column: x => x.InventoryId,
-                        principalTable: "Inventories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InventoryFieldDefinitions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    InventoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FieldType = table.Column<int>(type: "integer", nullable: false),
-                    SlotIndex = table.Column<int>(type: "integer", nullable: false),
-                    Title = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
-                    Description = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: true),
-                    ShowInTable = table.Column<bool>(type: "boolean", nullable: false),
-                    SortOrder = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InventoryFieldDefinitions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_InventoryFieldDefinitions_Inventories_InventoryId",
                         column: x => x.InventoryId,
                         principalTable: "Inventories",
                         principalColumn: "Id",
@@ -349,26 +350,13 @@ namespace Course.DataAccess.Migrations
                     InventoryId = table.Column<Guid>(type: "uuid", nullable: false),
                     CustomId = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Price = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     SequenceNumber = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedById = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
                     UpdatedById = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: true),
-                    TextValue1 = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    TextValue2 = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    TextValue3 = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    MultiTextValue1 = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    MultiTextValue2 = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    MultiTextValue3 = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    NumberValue1 = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
-                    NumberValue2 = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
-                    NumberValue3 = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
-                    LinkValue1 = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
-                    LinkValue2 = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
-                    LinkValue3 = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
-                    BoolValue1 = table.Column<bool>(type: "boolean", nullable: true),
-                    BoolValue2 = table.Column<bool>(type: "boolean", nullable: true),
-                    BoolValue3 = table.Column<bool>(type: "boolean", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "bytea", nullable: false)
                 },
                 constraints: table =>
@@ -389,6 +377,32 @@ namespace Course.DataAccess.Migrations
                         name: "FK_Items_Inventories_InventoryId",
                         column: x => x.InventoryId,
                         principalTable: "Inventories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemFieldValues",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ItemId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomFieldId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Value = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemFieldValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ItemFieldValues_CustomFields_CustomFieldId",
+                        column: x => x.CustomFieldId,
+                        principalTable: "CustomFields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ItemFieldValues_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -456,6 +470,13 @@ namespace Course.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomFields_InventoryId_Name",
+                table: "CustomFields",
+                columns: new[] { "InventoryId", "Name" },
+                unique: true,
+                filter: "\"IsDeleted\" = false");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DiscussionPosts_InventoryId",
                 table: "DiscussionPosts",
                 column: "InventoryId");
@@ -493,12 +514,6 @@ namespace Course.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_InventoryFieldDefinitions_InventoryId_FieldType_SlotIndex",
-                table: "InventoryFieldDefinitions",
-                columns: new[] { "InventoryId", "FieldType", "SlotIndex" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_InventoryIdElements_InventoryId_SortOrder",
                 table: "InventoryIdElements",
                 columns: new[] { "InventoryId", "SortOrder" });
@@ -507,6 +522,17 @@ namespace Course.DataAccess.Migrations
                 name: "IX_InventoryTags_TagId",
                 table: "InventoryTags",
                 column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemFieldValues_CustomFieldId",
+                table: "ItemFieldValues",
+                column: "CustomFieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemFieldValues_ItemId_CustomFieldId",
+                table: "ItemFieldValues",
+                columns: new[] { "ItemId", "CustomFieldId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItemLikes_ItemId_UserId",
@@ -567,13 +593,13 @@ namespace Course.DataAccess.Migrations
                 name: "InventoryAccesses");
 
             migrationBuilder.DropTable(
-                name: "InventoryFieldDefinitions");
-
-            migrationBuilder.DropTable(
                 name: "InventoryIdElements");
 
             migrationBuilder.DropTable(
                 name: "InventoryTags");
+
+            migrationBuilder.DropTable(
+                name: "ItemFieldValues");
 
             migrationBuilder.DropTable(
                 name: "ItemLikes");
@@ -583,6 +609,9 @@ namespace Course.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "CustomFields");
 
             migrationBuilder.DropTable(
                 name: "Items");

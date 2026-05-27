@@ -51,19 +51,29 @@ public class InventorySearchService : IInventorySearchService
             .Take(50)
             .ToListAsync();
 
+        // Search items by Name, Description, CustomId, and custom field values
+        var accessibleInventoryIds = accessibleInventories.Select(i => i.Id);
+
+        // Find item IDs matching via field values
+        var itemIdsFromFieldValues = await _unitOfWork.Repository<ItemFieldValue>()
+            .Query()
+            .AsNoTracking()
+            .Where(fv => accessibleInventoryIds.Contains(fv.Item!.InventoryId)
+                         && fv.Value != null
+                         && EF.Functions.ILike(fv.Value, pattern))
+            .Select(fv => fv.ItemId)
+            .Distinct()
+            .Take(100)
+            .ToListAsync();
+
         var itemResults = await _unitOfWork.Repository<Item>()
             .Query()
             .AsNoTracking()
-            .Where(item => accessibleInventories.Select(inventory => inventory.Id).Contains(item.InventoryId))
+            .Where(item => accessibleInventoryIds.Contains(item.InventoryId))
             .Where(item => EF.Functions.ILike(item.CustomId, pattern)
                 || EF.Functions.ILike(item.Name, pattern)
-                || (item.TextValue1 != null && EF.Functions.ILike(item.TextValue1, pattern))
-                || (item.TextValue2 != null && EF.Functions.ILike(item.TextValue2, pattern))
-                || (item.TextValue3 != null && EF.Functions.ILike(item.TextValue3, pattern))
-                || (item.MultiTextValue1 != null && EF.Functions.ILike(item.MultiTextValue1, pattern))
-                || (item.MultiTextValue2 != null && EF.Functions.ILike(item.MultiTextValue2, pattern))
-                || (item.MultiTextValue3 != null && EF.Functions.ILike(item.MultiTextValue3, pattern))
-                || (item.Inventory != null && EF.Functions.ILike(item.Inventory.Title, pattern)))
+                || EF.Functions.ILike(item.Description, pattern)
+                || itemIdsFromFieldValues.Contains(item.Id))
             .Select(item => new SearchResultDto
             {
                 Type = "item",

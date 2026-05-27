@@ -6,5 +6,7 @@ public enum InventoryFieldType
     MultiLineText = 2,
     Number = 3,
     Link = 4,
-    Boolean = 5
+    Boolean = 5,
+    Url = 6,
+    OneFromList = 7
 }

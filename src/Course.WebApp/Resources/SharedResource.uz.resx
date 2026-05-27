@@ -162,6 +162,18 @@
   <data name="IdFormatUpdate" xml:space="preserve">
     <value>ID formatni yangilash</value>
   </data>
+  <data name="IdFormatSmartPreview" xml:space="preserve">
+    <value>Aqlli ko'rsatish</value>
+  </data>
+  <data name="IdFormatPreviewButton" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="IdFormatTokensLabel" xml:space="preserve">
+    <value>Quyidagilar kabi tokenlardan foydalaning</value>
+  </data>
+  <data name="IdFormatExampleLabel" xml:space="preserve">
+    <value>Misol:</value>
+  </data>
   <data name="IdFormatNoAccess" xml:space="preserve">
     <value>ID formatni tahrirlash uchun ruxsat yoq.</value>
   </data>
@@ -264,11 +276,29 @@
   <data name="AddItem" xml:space="preserve">
     <value>Buyum qoshish</value>
   </data>
+  <data name="ItemNameLabel" xml:space="preserve">
+    <value>Nomi</value>
+  </data>
   <data name="PriceLabel" xml:space="preserve">
     <value>Narx</value>
   </data>
   <data name="ItemFieldsTitle" xml:space="preserve">
     <value>Buyum maydonlari</value>
+  </data>
+  <data name="ExportItems" xml:space="preserve">
+    <value>Eksport</value>
+  </data>
+  <data name="SampleSingleLine" xml:space="preserve">
+    <value>Masalan: matn</value>
+  </data>
+  <data name="SampleMultiLine" xml:space="preserve">
+    <value>Masalan: batafsil tavsif</value>
+  </data>
+  <data name="SampleLink" xml:space="preserve">
+    <value>https://example.com</value>
+  </data>
+  <data name="SampleNumber" xml:space="preserve">
+    <value>Masalan: 123</value>
   </data>
   <data name="SearchEnterQueryHint" xml:space="preserve">
     <value>Mos inventar va buyumlarni korish uchun sorov kiriting.</value>
@@ -311,5 +341,23 @@
   </data>
   <data name="ProfilePageHint" xml:space="preserve">
     <value>Oz inventarlaringiz va sizga ulashilganlarini boshqaring.</value>
+  </data>
+  <data name="AdminSubtitle" xml:space="preserve">
+    <value>Tizim foydalanuvchilarini boshqaring, rollarni sozlang va xavfsizlik qoidalarini joriy eting.</value>
+  </data>
+  <data name="AdminUsersRegistered" xml:space="preserve">
+    <value>Royxatdan otgan foydalanuvchilar</value>
+  </data>
+  <data name="AdminSelfProtected" xml:space="preserve">
+    <value>Ozi (Himoyalangan)</value>
+  </data>
+  <data name="TableActions" xml:space="preserve">
+    <value>Harakatlar</value>
+  </data>
+  <data name="AdminActiveStatus" xml:space="preserve">
+    <value>Faol</value>
+  </data>
+  <data name="AdminBlockedStatus" xml:space="preserve">
+    <value>Bloklangan</value>
   </data>
 </root>

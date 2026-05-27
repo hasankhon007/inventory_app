@@ -30,7 +30,7 @@ public class Inventory
 
     public byte[] RowVersion { get; set; } = Array.Empty<byte>();
 
-    public ICollection<InventoryFieldDefinition> FieldDefinitions { get; set; } = new List<InventoryFieldDefinition>();
+    public ICollection<CustomField> CustomFields { get; set; } = new List<CustomField>();
     public ICollection<InventoryIdElement> IdElements { get; set; } = new List<InventoryIdElement>();
     public ICollection<InventoryAccess> AccessList { get; set; } = new List<InventoryAccess>();
     public ICollection<InventoryTag> Tags { get; set; } = new List<InventoryTag>();

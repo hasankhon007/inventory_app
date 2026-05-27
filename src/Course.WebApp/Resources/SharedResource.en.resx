@@ -159,6 +159,18 @@
   <data name="IdFormatUpdate" xml:space="preserve">
     <value>Update ID format</value>
   </data>
+  <data name="IdFormatSmartPreview" xml:space="preserve">
+    <value>Smart preview</value>
+  </data>
+  <data name="IdFormatPreviewButton" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="IdFormatTokensLabel" xml:space="preserve">
+    <value>Use tokens like</value>
+  </data>
+  <data name="IdFormatExampleLabel" xml:space="preserve">
+    <value>Example:</value>
+  </data>
   <data name="IdFormatNoAccess" xml:space="preserve">
     <value>Only authorized users can edit the ID format.</value>
   </data>
@@ -261,11 +273,29 @@
   <data name="AddItem" xml:space="preserve">
     <value>Add item</value>
   </data>
+  <data name="ItemNameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
   <data name="PriceLabel" xml:space="preserve">
     <value>Price</value>
   </data>
   <data name="ItemFieldsTitle" xml:space="preserve">
     <value>Item fields</value>
+  </data>
+  <data name="ExportItems" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SampleSingleLine" xml:space="preserve">
+    <value>e.g. Sample text</value>
+  </data>
+  <data name="SampleMultiLine" xml:space="preserve">
+    <value>e.g. Detailed description</value>
+  </data>
+  <data name="SampleLink" xml:space="preserve">
+    <value>https://example.com</value>
+  </data>
+  <data name="SampleNumber" xml:space="preserve">
+    <value>e.g. 123</value>
   </data>
   <data name="SearchEnterQueryHint" xml:space="preserve">
     <value>Enter a query to see matching inventories and items.</value>
@@ -320,5 +350,23 @@
   </data>
   <data name="ProfilePageHint" xml:space="preserve">
     <value>Manage your inventories and the ones shared with you.</value>
+  </data>
+  <data name="AdminSubtitle" xml:space="preserve">
+    <value>Manage system users, adjust roles, and enforce security policies.</value>
+  </data>
+  <data name="AdminUsersRegistered" xml:space="preserve">
+    <value>Users Registered</value>
+  </data>
+  <data name="AdminSelfProtected" xml:space="preserve">
+    <value>Self (Protected)</value>
+  </data>
+  <data name="TableActions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="AdminActiveStatus" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="AdminBlockedStatus" xml:space="preserve">
+    <value>Blocked</value>
   </data>
 </root>

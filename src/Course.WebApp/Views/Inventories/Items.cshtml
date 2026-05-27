@@ -11,25 +11,51 @@
     <div class="card-body">
         <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-3">
             <h1 class="h5 mb-0">@Localizer["InventoryItems"]</h1>
-            @if (Model.Nav.CanAddItems)
-            {
-                <a class="btn btn-primary mt-2 mt-sm-0" asp-action="CreateItem" asp-route-id="@Model.Nav.InventoryId">@Localizer["AddItem"]</a>
-            }
-            else if (User.Identity?.IsAuthenticated != true)
-            {
-                <span class="text-muted fs-7">
-                    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="fw-semibold">@Localizer["Login"]</a> to add items to this public inventory.
-                </span>
-            }
+            <div class="d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+                @if (Model.Nav.CanAddItems)
+                {
+                    <a class="btn btn-primary" asp-action="CreateItem" asp-route-id="@Model.Nav.InventoryId">@Localizer["AddItem"]</a>
+                }
+                <a class="btn btn-outline-secondary" asp-action="ExportItems" asp-route-id="@Model.Nav.InventoryId">@Localizer["ExportItems"]</a>
+                <a class="btn btn-outline-secondary" asp-action="ExportItemsExcel" asp-route-id="@Model.Nav.InventoryId">Export Excel</a>
+            </div>
         </div>
+
+        @* Search *@
+        <form method="get" asp-action="Items" asp-route-id="@Model.Nav.InventoryId" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search items..." value="@Model.SearchQuery" />
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+                @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+                {
+                    <a class="btn btn-outline-secondary" asp-action="Items" asp-route-id="@Model.Nav.InventoryId">Clear</a>
+                }
+            </div>
+        </form>
+
+        @if (!Model.Nav.CanAddItems && User.Identity?.IsAuthenticated != true)
+        {
+            <div class="text-muted fs-7 mb-3">
+                <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="fw-semibold">@Localizer["Login"]</a> to add items to this public inventory.
+            </div>
+        }
         <div class="table-responsive">
             <table class="table align-middle custom-table">
                 <thead>
                     <tr>
                         <th scope="col">@Localizer["TableCustomId"]</th>
                         <th scope="col">@Localizer["TableName"]</th>
+                        <th scope="col">Description</th>
                         <th scope="col">@Localizer["TablePrice"]</th>
+                        @foreach (var col in Model.FieldColumns)
+                        {
+                            <th scope="col">@col.Name</th>
+                        }
                         <th scope="col">@Localizer["TableUpdated"]</th>
+                        @if (Model.Nav.CanEdit)
+                        {
+                            <th scope="col"></th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -40,15 +66,39 @@
                             <tr>
                                 <td>@item.CustomId</td>
                                 <td>@(string.IsNullOrWhiteSpace(item.Name) ? "-" : item.Name)</td>
-                                <td>@(item.Price?.ToString("N2") ?? "-")</td>
+                                <td>@(item.Description.Length > 50 ? item.Description[..50] + "..." : item.Description)</td>
+                                <td>@item.Price.ToString("N2")</td>
+                                @foreach (var col in Model.FieldColumns)
+                                {
+                                    <td>@(item.FieldValues.TryGetValue(col.Id, out var val) ? val ?? "-" : "-")</td>
+                                }
                                 <td>@item.UpdatedAt.ToLocalTime().ToString("g")</td>
+                                @if (Model.Nav.CanEdit)
+                                {
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               asp-action="EditItem"
+                                               asp-route-id="@Model.Nav.InventoryId"
+                                               asp-route-itemId="@item.Id">Edit</a>
+                                            <form asp-action="DeleteItem"
+                                                  asp-route-id="@Model.Nav.InventoryId"
+                                                  method="post"
+                                                  onsubmit="return confirm('Delete this item?');">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="itemId" value="@item.Id" />
+                                                <button type="submit" class="btn btn-sm btn-action-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                }
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="3" class="text-muted">@Localizer["NoItemsYet"]</td>
+                            <td colspan="@(5 + Model.FieldColumns.Count + (Model.Nav.CanEdit ? 1 : 0))" class="text-muted">@Localizer["NoItemsYet"]</td>
                         </tr>
                     }
                 </tbody>

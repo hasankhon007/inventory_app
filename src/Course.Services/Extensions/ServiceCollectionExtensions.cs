@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInventoryService, InventoryService>();
         services.AddScoped<IInventoryItemService, InventoryItemService>();
         services.AddScoped<IInventoryAccessService, InventoryAccessService>();
-        services.AddScoped<IInventoryFieldService, InventoryFieldService>();
+        services.AddScoped<ICustomFieldService, CustomFieldService>();
         services.AddScoped<IInventoryTagService, InventoryTagService>();
         services.AddScoped<IInventorySearchService, InventorySearchService>();
         services.AddScoped<IProfileService, ProfileService>();
